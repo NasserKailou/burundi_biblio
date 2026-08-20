@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Api\ConsultationController as ApiConsultationController;
+use App\Http\Controllers\Api\FavoriController as ApiFavoriController;
 use App\Http\Controllers\Api\ManuelController as ApiManuelController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +41,16 @@ Route::middleware(['auth', 'role:eleve'])->group(function () {
     });
 });
 
+Route::middleware('auth')->prefix('lecteur')->name('reader.')->group(function () {
+    Route::get('/{manuel}', [ReaderController::class, 'show'])->name('show');
+    // Le segment {nom} est ignore par le controleur (seul $manuel compte) : il sert
+    // uniquement a donner a l'URL une extension .pdf/.epub, necessaire car epubjs
+    // determine le type d'ouverture (archive vs repertoire) via l'extension du
+    // chemin (cf. epubjs/lib/epub/epub.js) - sans extension il tente de parcourir
+    // l'URL comme un repertoire d'epub "eclate" et echoue en 404.
+    Route::get('/{manuel}/fichier/{nom}', [ReaderController::class, 'fichier'])->name('fichier');
+});
+
 Route::middleware(['auth', 'role:enseignant'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
 });
@@ -49,4 +62,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware('auth')->prefix('api')->name('api.')->group(function () {
     Route::get('/manuels', [ApiManuelController::class, 'index'])->name('manuels.index');
     Route::get('/manuels/{manuel}', [ApiManuelController::class, 'show'])->name('manuels.show');
+
+    Route::post('/consultations', [ApiConsultationController::class, 'store'])->name('consultations.store');
+    Route::patch('/consultations/{consultation}', [ApiConsultationController::class, 'update'])->name('consultations.update');
+
+    Route::post('/favoris', [ApiFavoriController::class, 'store'])->name('favoris.store');
+    Route::delete('/favoris/{manuel}', [ApiFavoriController::class, 'destroy'])->name('favoris.destroy');
 });

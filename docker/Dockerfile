@@ -2,8 +2,9 @@ FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
     git curl unzip libpng-dev libjpeg-dev libfreetype6-dev \
-    libonig-dev libxml2-dev libzip-dev libicu-dev default-mysql-client \
-    nodejs npm \
+    libonig-dev libxml2-dev libzip-dev libicu-dev default-mysql-client ca-certificates \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-configure gd --with-jpeg --with-freetype \
     && docker-php-ext-install -j$(nproc) pdo_mysql mbstring exif pcntl bcmath gd zip intl \
     && rm -rf /var/lib/apt/lists/*

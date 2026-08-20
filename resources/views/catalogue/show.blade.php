@@ -38,6 +38,19 @@
         @if ($manuel->description)
             <p class="mt-4 text-sm leading-relaxed text-bns-foreground">{{ $manuel->description }}</p>
         @endif
+
+        <div class="mt-6 flex items-center gap-3" id="actions-manuel" data-manuel-id="{{ $manuel->id }}" data-favori="{{ $estFavori ? '1' : '0' }}" data-favori-url="{{ route('api.favoris.store') }}" data-favori-destroy-url="{{ route('api.favoris.destroy', $manuel) }}">
+            <a href="{{ route('reader.show', $manuel) }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-bns-primary px-4 py-2 text-sm font-medium text-bns-on-primary transition-colors duration-150 hover:bg-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring focus-visible:ring-offset-2">
+                Lire
+            </a>
+            <x-button id="btn-favori-fiche" variant="secondary" type="button" aria-pressed="{{ $estFavori ? 'true' : 'false' }}">
+                {{ $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+            </x-button>
+        </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    @vite(['resources/js/fiche-manuel.js'])
+@endpush
