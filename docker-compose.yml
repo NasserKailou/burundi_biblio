@@ -19,6 +19,31 @@ services:
     networks:
       - bns_net
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: bns_scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    # Pas de cron systeme dans l'image : une boucle qui appelle le
+    # scheduler Laravel chaque minute (equivalent a l'entree cron
+    # standard "* * * * * php artisan schedule:run").
+    entrypoint: []
+    command: ["sh", "-c", "while true; do php artisan schedule:run; sleep 60; done"]
+    volumes:
+      - storage_data:/var/www/html/storage/app
+      - public_data:/var/www/html/public
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - bns_net
+
   nginx:
     image: nginx:1.27-alpine
     container_name: bns_nginx
