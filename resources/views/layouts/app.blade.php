@@ -10,7 +10,15 @@
     @auth
     <nav class="border-b border-bns-border bg-bns-card">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-            <span class="font-heading font-semibold text-bns-foreground">Bibliotheque Numerique Scolaire</span>
+            <div class="flex items-center gap-6">
+                <span class="font-heading font-semibold text-bns-foreground">Bibliotheque Numerique Scolaire</span>
+                @if (auth()->user()->isEleve())
+                    <div class="hidden items-center gap-4 text-sm sm:flex">
+                        <a href="{{ route('dashboard') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('dashboard')) font-medium text-bns-primary @endif">Mon espace</a>
+                        <a href="{{ route('catalogue.index') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('catalogue.*')) font-medium text-bns-primary @endif">Catalogue</a>
+                    </div>
+                @endif
+            </div>
             <div class="flex items-center gap-4 text-sm">
                 <span class="text-bns-muted-foreground">{{ auth()->user()->nomComplet() }}</span>
                 <form method="POST" action="{{ route('logout') }}">
@@ -29,5 +37,7 @@
 
         @yield('contenu')
     </main>
+
+    @stack('scripts')
 </body>
 </html>
