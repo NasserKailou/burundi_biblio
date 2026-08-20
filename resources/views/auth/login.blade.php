@@ -4,47 +4,37 @@
 
 @section('contenu')
 <div class="mx-auto mt-12 max-w-md">
-    <div class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 class="mb-1 text-xl font-semibold text-slate-900">Connexion</h1>
-        <p class="mb-6 text-sm text-slate-500">Bibliotheque Numerique Scolaire</p>
+    <x-card>
+        <h1 class="mb-1 font-heading text-xl font-semibold text-bns-foreground">Connexion</h1>
+        <p class="mb-6 text-sm text-bns-muted-foreground">Bibliotheque Numerique Scolaire</p>
 
         @if ($errors->any())
-            <div class="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
+            <x-alert type="error" class="mb-4">
                 <ul class="list-inside list-disc">
                     @foreach ($errors->all() as $erreur)
                         <li>{{ $erreur }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert>
         @endif
 
         <form method="POST" action="{{ route('login.attempt') }}" class="space-y-4">
             @csrf
-            <div>
-                <label for="identifiant" class="block text-sm font-medium text-slate-700">Identifiant</label>
-                <input id="identifiant" name="identifiant" type="text" required autofocus
-                    value="{{ old('identifiant') }}"
-                    class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            </div>
-            <div>
-                <label for="password" class="block text-sm font-medium text-slate-700">Mot de passe</label>
-                <input id="password" name="password" type="password" required
-                    class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            </div>
-            <label class="flex items-center gap-2 text-sm text-slate-600">
-                <input type="checkbox" name="remember" class="rounded border-slate-300">
+            <x-input name="identifiant" label="Identifiant" required autofocus value="{{ old('identifiant') }}" />
+            <x-input name="password" type="password" label="Mot de passe" required />
+
+            <label class="flex items-center gap-2 text-sm text-bns-muted-foreground">
+                <input type="checkbox" name="remember" class="rounded border-bns-border text-bns-primary focus:ring-bns-ring">
                 Se souvenir de moi
             </label>
-            <button type="submit"
-                class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                Se connecter
-            </button>
+
+            <x-button variant="primary" class="w-full">Se connecter</x-button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-slate-500">
+        <p class="mt-6 text-center text-sm text-bns-muted-foreground">
             Pas encore de compte eleve ?
-            <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:underline">Creer un compte</a>
+            <a href="{{ route('register') }}" class="font-medium text-bns-primary hover:underline">Creer un compte</a>
         </p>
-    </div>
+    </x-card>
 </div>
 @endsection
