@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditController as AdminAuditController;
+use App\Http\Controllers\Admin\ConfigurationController as AdminConfigurationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ManuelController as AdminManuelController;
+use App\Http\Controllers\Admin\MatiereController as AdminMatiereController;
+use App\Http\Controllers\Admin\NiveauController as AdminNiveauController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\ConsultationController as ApiConsultationController;
 use App\Http\Controllers\Api\FavoriController as ApiFavoriController;
 use App\Http\Controllers\Api\ManuelController as ApiManuelController;
@@ -67,6 +73,48 @@ Route::middleware(['auth', 'role:enseignant'])->prefix('teacher')->name('teacher
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('utilisateurs')->name('utilisateurs.')->group(function () {
+        Route::get('/', [AdminUserController::class, 'index'])->name('index');
+        Route::get('/creer', [AdminUserController::class, 'create'])->name('create');
+        Route::post('/', [AdminUserController::class, 'store'])->name('store');
+        Route::get('/importer', [AdminUserController::class, 'formulaireImport'])->name('importer.form');
+        Route::post('/importer', [AdminUserController::class, 'importer'])->name('importer');
+        Route::get('/{utilisateur}/modifier', [AdminUserController::class, 'edit'])->name('edit');
+        Route::put('/{utilisateur}', [AdminUserController::class, 'update'])->name('update');
+        Route::delete('/{utilisateur}', [AdminUserController::class, 'destroy'])->name('destroy');
+        Route::post('/{utilisateur}/activer', [AdminUserController::class, 'activer'])->name('activer');
+        Route::post('/{utilisateur}/desactiver', [AdminUserController::class, 'desactiver'])->name('desactiver');
+        Route::post('/{utilisateur}/reinitialiser-mot-de-passe', [AdminUserController::class, 'reinitialiserMotDePasse'])->name('reinitialiser-mdp');
+    });
+
+    Route::prefix('niveaux')->name('niveaux.')->group(function () {
+        Route::get('/', [AdminNiveauController::class, 'index'])->name('index');
+        Route::post('/', [AdminNiveauController::class, 'store'])->name('store');
+        Route::put('/{niveau}', [AdminNiveauController::class, 'update'])->name('update');
+        Route::delete('/{niveau}', [AdminNiveauController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('matieres')->name('matieres.')->group(function () {
+        Route::get('/', [AdminMatiereController::class, 'index'])->name('index');
+        Route::post('/', [AdminMatiereController::class, 'store'])->name('store');
+        Route::put('/{matiere}', [AdminMatiereController::class, 'update'])->name('update');
+        Route::delete('/{matiere}', [AdminMatiereController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('manuels')->name('manuels.')->group(function () {
+        Route::get('/', [AdminManuelController::class, 'index'])->name('index');
+        Route::get('/creer', [AdminManuelController::class, 'create'])->name('create');
+        Route::post('/', [AdminManuelController::class, 'store'])->name('store');
+        Route::get('/{manuel}/modifier', [AdminManuelController::class, 'edit'])->name('edit');
+        Route::put('/{manuel}', [AdminManuelController::class, 'update'])->name('update');
+        Route::delete('/{manuel}', [AdminManuelController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::get('/configuration', [AdminConfigurationController::class, 'edit'])->name('configuration.edit');
+    Route::put('/configuration', [AdminConfigurationController::class, 'update'])->name('configuration.update');
+
+    Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
 });
 
 Route::middleware('auth')->prefix('api')->name('api.')->group(function () {
