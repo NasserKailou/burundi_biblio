@@ -77,11 +77,11 @@
                                 <button type="submit" class="font-medium text-bns-muted-foreground hover:underline">Desactiver</button>
                             </form>
                         @endif
-                        <form method="POST" action="{{ route('admin.utilisateurs.reinitialiser-mdp', $u) }}" class="mr-3 inline" onsubmit="return confirm('Reinitialiser le mot de passe de cet utilisateur ?');">
+                        <form method="POST" action="{{ route('admin.utilisateurs.reinitialiser-mdp', $u) }}" class="mr-3 inline" data-confirm="Reinitialiser le mot de passe de cet utilisateur ?">
                             @csrf
                             <button type="submit" class="font-medium text-bns-foreground hover:underline">Reinit. MDP</button>
                         </form>
-                        <form method="POST" action="{{ route('admin.utilisateurs.destroy', $u) }}" class="inline" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                        <form method="POST" action="{{ route('admin.utilisateurs.destroy', $u) }}" class="inline" data-confirm="Supprimer cet utilisateur ?">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="font-medium text-bns-destructive hover:underline">Supprimer</button>

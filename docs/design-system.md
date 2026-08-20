@@ -68,8 +68,19 @@ Paire "Corporate Trust" (skill, domaine `typography`) : **Lexend** (titres, bout
 nav — concue pour ameliorer la vitesse de lecture, particulierement pertinente pour un
 public d'eleves) + **Source Sans 3** (corps de texte, tableaux, formulaires).
 
+Auto-hebergees via `@fontsource` (pas de CDN Google Fonts : l'application
+doit fonctionner sans dependance Internet sur l'intranet de
+l'etablissement, cf. section 1 du cahier des charges — corrige a l'etape
+10 apres avoir constate que l'import CDN initial violait cette
+contrainte).
+
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap');
+@import '@fontsource/lexend/500.css';
+@import '@fontsource/lexend/600.css';
+@import '@fontsource/lexend/700.css';
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/500.css';
+@import '@fontsource/source-sans-3/600.css';
 ```
 
 ```js

@@ -46,7 +46,7 @@
                         <td class="px-4 py-3 text-bns-muted-foreground">{{ $manuel->consultations_count }}</td>
                         <td class="px-4 py-3 text-right">
                             <a href="{{ route('teacher.manuels.edit', $manuel) }}" class="mr-3 font-medium text-bns-primary hover:underline">Modifier</a>
-                            <form method="POST" action="{{ route('teacher.manuels.destroy', $manuel) }}" class="inline" onsubmit="return confirm('Supprimer ce manuel ?');">
+                            <form method="POST" action="{{ route('teacher.manuels.destroy', $manuel) }}" class="inline" data-confirm="Supprimer ce manuel ?">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="font-medium text-bns-destructive hover:underline">Supprimer</button>

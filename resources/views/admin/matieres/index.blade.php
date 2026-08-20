@@ -43,7 +43,7 @@
                             @method('PUT')
                         </form>
                         <button type="submit" form="matiere-form-{{ $matiere->id }}" class="mr-3 font-medium text-bns-primary hover:underline">Enregistrer</button>
-                        <form method="POST" action="{{ route('admin.matieres.destroy', $matiere) }}" class="inline" onsubmit="return confirm('Supprimer cette matiere ?');">
+                        <form method="POST" action="{{ route('admin.matieres.destroy', $matiere) }}" class="inline" data-confirm="Supprimer cette matiere ?">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="font-medium text-bns-destructive hover:underline">Supprimer</button>

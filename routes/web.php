@@ -124,7 +124,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/statistiques/export', [AdminStatsController::class, 'export'])->name('statistiques.export');
 });
 
-Route::middleware('auth')->prefix('api')->name('api.')->group(function () {
+Route::middleware(['auth', 'throttle:120,1'])->prefix('api')->name('api.')->group(function () {
     Route::get('/manuels', [ApiManuelController::class, 'index'])->name('manuels.index');
     Route::get('/manuels/{manuel}', [ApiManuelController::class, 'show'])->name('manuels.show');
 

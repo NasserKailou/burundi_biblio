@@ -50,7 +50,7 @@
                             @method('PUT')
                         </form>
                         <button type="submit" form="niveau-form-{{ $niveau->id }}" class="mr-3 font-medium text-bns-primary hover:underline">Enregistrer</button>
-                        <form method="POST" action="{{ route('admin.niveaux.destroy', $niveau) }}" class="inline" onsubmit="return confirm('Supprimer ce niveau ?');">
+                        <form method="POST" action="{{ route('admin.niveaux.destroy', $niveau) }}" class="inline" data-confirm="Supprimer ce niveau ?">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="font-medium text-bns-destructive hover:underline">Supprimer</button>
