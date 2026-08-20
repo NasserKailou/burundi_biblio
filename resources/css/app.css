@@ -29,3 +29,58 @@
     --color-reader-bg: #faf9f6;
     --color-reader-toolbar: #1e293b;
 }
+
+/* Ecrans d'authentification (layouts/guest.blade.php) : formes decoratives
+   animees + entree en fondu. Respecte prefers-reduced-motion (section 8 -
+   accessibilite). */
+.bns-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    opacity: 0.35;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+.bns-blob-1 {
+    width: 26rem;
+    height: 26rem;
+    top: -8rem;
+    right: -8rem;
+}
+
+.bns-blob-2 {
+    width: 20rem;
+    height: 20rem;
+    bottom: -6rem;
+    left: -6rem;
+    background: radial-gradient(circle, rgba(217, 119, 6, 0.6) 0%, rgba(217, 119, 6, 0) 70%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .bns-blob-1 {
+        animation: bns-float-1 16s ease-in-out infinite;
+    }
+
+    .bns-blob-2 {
+        animation: bns-float-2 20s ease-in-out infinite;
+    }
+
+    .bns-fade-in-up {
+        animation: bns-fade-in-up 0.5s ease-out both;
+    }
+}
+
+@keyframes bns-float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-2rem, 2rem) scale(1.08); }
+}
+
+@keyframes bns-float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(2rem, -1.5rem) scale(1.05); }
+}
+
+@keyframes bns-fade-in-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,7 +1,7 @@
 # Contexte projet — Bibliothèque Numérique Scolaire (BNS)
 
 > Mémoire persistante du projet. À maintenir à jour à chaque étape (section 13 du plan).
-> Dernière mise à jour : 2026-08-20 — **Projet terminé : 13/13 étapes.**
+> Dernière mise à jour : 2026-08-20 (session 2) — Correctif erreur 500 au login + refonte design pages de connexion/inscription. Voir section "Session 2" en fin de fichier.
 
 ## 1. Résumé produit
 
@@ -100,3 +100,19 @@ Mot de passe commun par rôle (démo uniquement — à changer en production) :
 - `enseignant3` (niveau principal 3ème + niveau additionnel Terminale, droit "commun" accordé)
 - `eleve4` et `eleve12` sont volontairement `actif=false` pour démontrer le workflow de validation d'inscription admin.
 - 10 manuels publiés (dont 3 "communs") + 1 manuel en `brouillon` (invisible aux élèves) pour démontrer le filtrage par statut.
+
+## Session 2 — 2026-08-20 : correctif 500 au login + refonte design auth
+
+**Signalé par l'utilisateur** : erreur 500 lors de la tentative de connexion après déploiement (config faite de son côté).
+
+**Cause identifiée** : `AuthController::login()` appelle `RateLimiter::tooManyAttempts()` en tout premier (avant même `Auth::attempt()`), qui utilise le **cache par défaut** (`CACHE_STORE`, `.env.example`). Ce cache était configuré sur **Redis** par défaut. Si Redis n'est pas joignable dans l'environnement de déploiement de l'utilisateur, cette ligne lève une exception → 500, précisément à la soumission du formulaire de connexion (pas au chargement de la page), ce qui correspond exactement au symptôme rapporté.
+
+**Correctif** : `CACHE_STORE` par défaut passé de `redis` à `database` dans `.env.example` (utilise la table `cache` déjà migrée, zéro dépendance de service supplémentaire). Redis reste disponible comme service Docker optionnel (cohérent avec la section 2 du cahier des charges qui le qualifie d'"optionnel") mais n'est plus un point de défaillance pour une fonctionnalité aussi centrale que la connexion.
+
+**⚠️ Action requise côté utilisateur** : ce correctif modifie `.env.example`, pas le `.env` déjà généré sur son déploiement. Il doit soit régénérer son `.env` depuis le nouveau `.env.example`, soit changer manuellement `CACHE_STORE=redis` en `CACHE_STORE=database` dans son `.env` existant, puis relancer les conteneurs (`docker compose up -d --build`, ou simplement redémarrer `app` si les fichiers sont déjà à jour).
+
+**Vérifié** : test de connexion complet (GET /login → extraction du token CSRF → POST /login avec `admin`/`Admin@2026!`) via `curl`, avec `CACHE_STORE=database` explicite et sans Redis démarré → `302` vers `/admin/dashboard` confirmé. Reste non vérifié : le comportement exact dans l'environnement Docker réel de l'utilisateur (cause probable mais pas prouvée à 100% sans accès à ses logs — si le problème persiste après ce correctif, demander `docker compose logs app` ou le contenu de `storage/logs/laravel.log`).
+
+**Design pages de connexion/inscription** (demande explicite : "plus attractif, plus animatif, plus professionnel") : nouveau `layouts/guest.blade.php` — mise en page deux colonnes sur grand écran (panneau de marque avec dégradé animé + formes décoratives "blob" en CSS, formulaire dans la colonne droite), animation d'entrée en fondu (`bns-fade-in-up`), micro-interaction sur le bouton principal (léger soulèvement au survol). Toutes les animations respectent `prefers-reduced-motion` (déjà une exigence du design system, section 8). `login.blade.php` et `register.blade.php` réécrits pour utiliser ce nouveau layout, cohérence visuelle conservée avec le reste du design system (palette teal/ambre, Lexend/Source Sans 3). Vérifié : `npm run build` sans erreur, page `/login` retourne 200 avec le nouveau balisage présent.
+
+**Nouvelle règle de workflow** (mémorisée) : mettre à jour ce fichier et pousser sur `origin` (https://github.com/NasserKailou/burundi_biblio.git, branche `master`) à la fin de chaque session sur ce projet, pas seulement sur demande explicite.
