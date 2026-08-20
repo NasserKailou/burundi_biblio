@@ -1,7 +1,7 @@
 # Contexte projet — Bibliothèque Numérique Scolaire (BNS)
 
 > Mémoire persistante du projet. À maintenir à jour à chaque étape (section 13 du plan).
-> Dernière mise à jour : 2026-08-20 — Étape 1/13 en cours (chore: init).
+> Dernière mise à jour : 2026-08-20 — Étape 2/13 terminée (migrations + modèles + seeders).
 
 ## 1. Résumé produit
 
@@ -32,8 +32,9 @@ accessible uniquement au sein de l'établissement (pas de dépendance Internet e
 
 ## 3. État d'avancement (section 13)
 
-- [x] **Étape 1 — chore: init** : dépôt git initialisé dans `burundi_biblio/`, scaffold Laravel 11 (Tailwind+Vite inclus), Docker (Dockerfile multi-rôle PHP+Node, nginx, docker-compose avec app/nginx/db/redis), `context.md`. *(commit en cours)*
-- [ ] Étape 2 — feat: migrations + modèles + seeders
+- [x] **Étape 1 — chore: init** : dépôt git initialisé dans `burundi_biblio/`, scaffold Laravel 11 (Tailwind+Vite inclus), Docker (Dockerfile multi-rôle PHP+Node, nginx, docker-compose avec app/nginx/db/redis), `context.md`.
+- [x] **Étape 2 — feat: migrations + modèles + seeders** : 11 migrations métier (roles, niveaux, matieres, users, user_niveau, manuels, manuel_niveau, consultations, favoris, logs_audit, parametres) + password_reset_tokens supprimée (reset MDP admin-only, pas de flow email) ; 9 modèles Eloquent avec relations + scopes RBAC (`Manuel::scopeVisiblePour($user)` filtre côté requête) ; config/hashing.php (Argon2id) ; 7 seeders (Role/Niveau/Matiere/Parametre/User/Manuel/Consultation) + script `database/seeders/support/generate_demo_assets.php` qui génère les fixtures de démo (10 PDF via Dompdf, 4 EPUB via ZipArchive, 10 couvertures JPG via GD) commitées dans `database/seeders/assets/`. **Validé en local** : migrations + seeders exécutés avec succès sur SQLite éphémère (`/tmp/bns_test.sqlite`, jamais commité) — 16 users, 11 manuels (10 publiés + 1 brouillon), 68 consultations, 20 favoris, scope RBAC vérifié (eleve1 en 6ème voit 5 manuels = 2 spécifiques + 3 communs).
+- [ ] Étape 3 — feat: auth + rôles + RoleMiddleware (RBAC)
 - [ ] Étape 3 — feat: auth + rôles + RoleMiddleware (RBAC)
 - [ ] Étape 4 — design: design system + composants UI (ui-ux-pro-max-skill)
 - [ ] Étape 5 — feat: catalogue filtré + recherche AJAX
@@ -64,4 +65,16 @@ accessible uniquement au sein de l'établissement (pas de dépendance Internet e
 
 ## 6. Identifiants de démo (à publier dans README à l'étape 13)
 
-À définir à l'étape 2 (seeders) et documenté au fur et à mesure ici.
+Mot de passe commun par rôle (démo uniquement — à changer en production) :
+
+| Rôle | Identifiant(s) | Mot de passe |
+|---|---|---|
+| Admin | `admin` | `Admin@2026!` |
+| Enseignant | `enseignant1`, `enseignant2`, `enseignant3` | `Enseignant@2026!` |
+| Élève | `eleve1` à `eleve12` | `Eleve@2026!` |
+
+- `enseignant1` (niveau principal 6ème + niveaux additionnels 5ème/2nde, droit "commun" accordé)
+- `enseignant2` (niveau principal 5ème + niveau additionnel 4ème, droit "commun" accordé)
+- `enseignant3` (niveau principal 3ème + niveau additionnel Terminale, droit "commun" accordé)
+- `eleve4` et `eleve12` sont volontairement `actif=false` pour démontrer le workflow de validation d'inscription admin.
+- 10 manuels publiés (dont 3 "communs") + 1 manuel en `brouillon` (invisible aux élèves) pour démontrer le filtrage par statut.
