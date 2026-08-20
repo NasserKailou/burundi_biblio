@@ -1,7 +1,7 @@
 # Contexte projet — Bibliothèque Numérique Scolaire (BNS)
 
 > Mémoire persistante du projet. À maintenir à jour à chaque étape (section 13 du plan).
-> Dernière mise à jour : 2026-08-20 — Étape 2/13 terminée (migrations + modèles + seeders).
+> Dernière mise à jour : 2026-08-20 — Étape 3/13 terminée (auth + rôles + RoleMiddleware).
 
 ## 1. Résumé produit
 
@@ -34,8 +34,7 @@ accessible uniquement au sein de l'établissement (pas de dépendance Internet e
 
 - [x] **Étape 1 — chore: init** : dépôt git initialisé dans `burundi_biblio/`, scaffold Laravel 11 (Tailwind+Vite inclus), Docker (Dockerfile multi-rôle PHP+Node, nginx, docker-compose avec app/nginx/db/redis), `context.md`.
 - [x] **Étape 2 — feat: migrations + modèles + seeders** : 11 migrations métier (roles, niveaux, matieres, users, user_niveau, manuels, manuel_niveau, consultations, favoris, logs_audit, parametres) + password_reset_tokens supprimée (reset MDP admin-only, pas de flow email) ; 9 modèles Eloquent avec relations + scopes RBAC (`Manuel::scopeVisiblePour($user)` filtre côté requête) ; config/hashing.php (Argon2id) ; 7 seeders (Role/Niveau/Matiere/Parametre/User/Manuel/Consultation) + script `database/seeders/support/generate_demo_assets.php` qui génère les fixtures de démo (10 PDF via Dompdf, 4 EPUB via ZipArchive, 10 couvertures JPG via GD) commitées dans `database/seeders/assets/`. **Validé en local** : migrations + seeders exécutés avec succès sur SQLite éphémère (`/tmp/bns_test.sqlite`, jamais commité) — 16 users, 11 manuels (10 publiés + 1 brouillon), 68 consultations, 20 favoris, scope RBAC vérifié (eleve1 en 6ème voit 5 manuels = 2 spécifiques + 3 communs).
-- [ ] Étape 3 — feat: auth + rôles + RoleMiddleware (RBAC)
-- [ ] Étape 3 — feat: auth + rôles + RoleMiddleware (RBAC)
+- [x] **Étape 3 — feat: auth + rôles + RoleMiddleware (RBAC)** : `AuthController` (login par `identifiant` avec `Auth::attempt`, throttling `RateLimiter` 5 tentatives/min en plus du `throttle:10,1` sur les routes, inscription élève avec compte `actif=false` par défaut sauf `validation_auto`, logout, régénération de session) ; `RoleMiddleware` (`role:admin|enseignant|eleve`, aborts 403) et `EnsureUserIsActive` (deconnecte immediatement un compte desactive meme si sa session est encore ouverte, appliquee globalement au groupe `web`) ; `AuditService` (log best-effort dans `logs_audit` pour connexion/deconnexion/inscription, sans jamais faire echouer l'action principale) ; dashboards fonctionnels par role (eleve/enseignant/admin) avec layout Tailwind de base. **Validé en local dans un navigateur réel** (php artisan serve + vite dev, SQLite éphémère) : login/logout eleve+enseignant+admin OK, 403 sur route admin pour un eleve, compte inactif rejeté avec message, inscription cree bien un compte inactif. Incident de debug notable : deux processus `php artisan serve` etaient restes lies au meme port sur Windows (l'un avec `SESSION_DRIVER=array`) et se partageaient le trafic de facon non deterministe, causant des `419 Page Expired` intermittents - resolu en tuant les processus par PID Windows (`taskkill`) plutot que `pkill` (qui ne matche pas les PID natifs Windows depuis Git Bash).
 - [ ] Étape 4 — design: design system + composants UI (ui-ux-pro-max-skill)
 - [ ] Étape 5 — feat: catalogue filtré + recherche AJAX
 - [ ] Étape 6 — feat: lecteur PDF/EPUB + suivi consultation + favoris
