@@ -1,0 +1,72 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: bns_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - storage_data:/var/www/html/storage/app
+      - public_data:/var/www/html/public
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - bns_net
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: bns_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - public_data:/var/www/html/public:ro
+    depends_on:
+      - app
+    networks:
+      - bns_net
+
+  db:
+    image: mariadb:10.11
+    container_name: bns_db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-bns}
+      MARIADB_USER: ${DB_USERNAME:-bns_user}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-bns_password}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-bns_root_password}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - bns_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: bns_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - bns_net
+
+volumes:
+  db_data:
+  redis_data:
+  storage_data:
+  public_data:
+
+networks:
+  bns_net:
+    driver: bridge

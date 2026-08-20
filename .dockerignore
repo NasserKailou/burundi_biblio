@@ -1,0 +1,14 @@
+.git
+.env
+node_modules
+vendor
+storage/app/manuels/*
+storage/app/couvertures/*
+!storage/app/manuels/.gitkeep
+!storage/app/couvertures/.gitkeep
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+tests
+docs
