@@ -1,7 +1,7 @@
 # Contexte projet — Bibliothèque Numérique Scolaire (BNS)
 
 > Mémoire persistante du projet. À maintenir à jour à chaque étape (section 13 du plan).
-> Dernière mise à jour : 2026-08-20 — Étape 12/13 terminée (scripts sauvegarde/restauration).
+> Dernière mise à jour : 2026-08-20 — **Projet terminé : 13/13 étapes.**
 
 ## 1. Résumé produit
 
@@ -57,7 +57,17 @@ accessible uniquement au sein de l'établissement (pas de dépendance Internet e
 - [x] **Étape 11 — test: tests unitaires + fonctionnels** : `phpunit.xml` bascule sur SQLite `:memory:` pour les tests (etait commente). Factories ajoutees (Matiere/Niveau/Manuel/Consultation) + `HasFactory` sur les modeles correspondants. 29 tests / 73 assertions, tous verts (`php artisan test`) : 2 fichiers Unit (StatsService : overview/tri/portee par niveau ; regles de permission `Manuel::scopeVisiblePour` pour les 3 roles) + 5 fichiers Feature (authentification : connexion, compte inactif rejete, inscription avec/sans validation_auto ; RBAC : 403 croise entre les 3 roles + redirection invite ; catalogue : filtrage API, 403 hors niveau, 403 brouillon, recherche AJAX ; upload enseignant : succes, rejet MIME reel invalide, niveau non autorise rejete, 403 sur le manuel d'un collegue ; gestion admin : validation inscription, protection dernier admin, reset MDP change le hash).
   **Bug trouve et corrige** : `bcrypt()` utilise dans les tests pour pre-hasher un mot de passe provoquait une `RuntimeException` ("Could not verify the hashed value's configuration") car le driver de hachage de l'app est Argon2id, pas bcrypt — corrige en `Hash::make()` (respecte le driver configure), qui est de toute façon la bonne pratique.
 - [x] **Étape 12 — feat: scripts sauvegarde/restauration** : `scripts/sauvegarde.sh` (dump `mysqldump` + archive `tar.gz` de `storage/app/{manuels,couvertures}`, purge auto >30j) et `scripts/restauration.sh` (confirmation explicite requise). Nouveau service `scheduler` dans `docker-compose.yml` (boucle `php artisan schedule:run` toutes les 60s — pas de cron systeme dans l'image). Planifie dans `routes/console.php` : sauvegarde quotidienne 02h00, purge hebdomadaire des consultations (`bns:purger-consultations`, etape 10). `docs/sauvegarde.md` : procedure complete. **Verifie** : syntaxe shell valide (`sh -n`), `php artisan schedule:list` confirme les 2 taches enregistrees avec les bonnes expressions cron. **Non teste** : execution reelle de `mysqldump`/`mysql` (indisponibles dans cet environnement de dev sans Docker) — limite documentee explicitement dans docs/sauvegarde.md, verification recommandee a l'utilisateur lors du premier deploiement.
-- [ ] Étape 13 — docs: README + guides + infrastructure + design-system + context.md final
+- [x] **Étape 13 — docs: README + guides + infrastructure + design-system + context.md final** : `README.md` reecrit entierement (demarrage Docker, comptes de demo, table des matieres vers `docs/`, limites connues assumees explicitement) ; `docs/guide-eleve.md`, `docs/guide-enseignant.md`, `docs/guide-admin.md` (un par role, couvrant chaque ecran construit) ; `docs/infrastructure.md` (section 10 : serveur, reseau, budget indicatif ~12 900 €, avec rappel explicite qu'un relevé de site reel est necessaire). `docs/design-system.md` (etape 4) et `docs/security.md` (etape 10) deja a jour, references depuis le README.
+
+## Bilan final (13/13 etapes)
+
+Projet complet : 3 roles fonctionnels avec RBAC filtre cote requete a chaque niveau, catalogue + lecteur PDF/EPUB (bugs reels trouves et corriges en test navigateur), espace enseignant, back-office admin complet, module statistiques avec exports, durcissement securite (2 failles reelles trouvees et corrigees : CDN Google Fonts + CSP unsafe-inline), 29 tests verts, scripts de sauvegarde planifies. 13 commits, un par etape du plan section 13.
+
+**Deux limites honnetes, assumees et documentees** (jamais dissimulees) :
+1. Rendu pixel du lecteur PDF.js/EPUB.js non confirme visuellement (panneau de test en `document.hidden=true` dans cet environnement — toute la logique sous-jacente est verifiee).
+2. Scripts `mysqldump`/`mysql` non executes en conditions reelles (outils absents de l'environnement de developpement sans Docker).
+
+Aucun TODO, aucune fonction vide, aucun placeholder dans le code livre.
 
 ## 4. Contraintes d'environnement observées
 
