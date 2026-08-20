@@ -3,13 +3,13 @@
 @section('titre', 'Statistiques')
 
 @section('contenu')
-<h1 class="mb-6 font-heading text-2xl font-semibold text-bns-foreground">Statistiques de mon niveau</h1>
+<x-page-header title="Statistiques de mon niveau" description="Usage des manuels que vous avez publies." icon="chart-bar" />
 
 <div class="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-    <x-stat-card label="Manuels" :value="$overview['nb_manuels']" />
-    <x-stat-card label="Consultations" :value="$overview['nb_consultations']" />
-    <x-stat-card label="Heures de lecture" :value="$overview['duree_totale_heures']" />
-    <x-stat-card label="Eleves actifs" :value="$overview['nb_eleves_actifs']" />
+    <x-stat-card label="Manuels" :value="$overview['nb_manuels']" icon="book-open" accent="primary" />
+    <x-stat-card label="Consultations" :value="$overview['nb_consultations']" icon="chart-bar" accent="accent" />
+    <x-stat-card label="Heures de lecture" :value="$overview['duree_totale_heures']" icon="clock" accent="success" />
+    <x-stat-card label="Eleves actifs" :value="$overview['nb_eleves_actifs']" icon="users" accent="primary" />
 </div>
 
 <div class="mb-8 grid gap-6 lg:grid-cols-2">

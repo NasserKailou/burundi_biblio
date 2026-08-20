@@ -136,7 +136,22 @@ Tailwind ne sont pas utilisables dans la config JS de Chart.js).
 
 ## Icônes
 
-SVG uniquement (Heroicons), jamais d'emoji comme icone fonctionnelle (checklist skill).
+SVG uniquement, jamais d'emoji comme icone fonctionnelle (checklist skill). Implémentées
+via `<x-icon name="...">` (`resources/views/components/icon.blade.php`), un registre
+d'environ 30 icônes outline dessinées en interne (style Heroicons/Phosphor, sans
+dépendance npm). Noms d'icônes retenus après requête `--domain icons` du skill :
+`home`, `users`, `user-plus`, `book-open`, `tag`, `layers`, `cog`, `shield-check`,
+`chart-bar`, `logout`, `search`, `plus`, `pencil`, `trash`, `check-circle`, `x-circle`,
+`download`, `clipboard-list`, `menu`, `x-mark`, `chevron-down/right`, `arrow-right`,
+`academic-cap`, `sparkles`, `lock`, `bolt`, `device`, `globe`, `building`, `clock`,
+`mail`, `filter`.
+
+## Composants de mise en page partagés
+
+`x-page-header` (titre + description + actions), `x-empty-state` et `x-form-section`
+(regroupement de formulaires longs en sections titrées) uniformisent le back-office
+admin et enseignant (session 3 — refonte visuelle globale). `x-button` accepte un prop
+`href` optionnel pour rendre un `<a>` stylé identiquement à un `<button>`.
 
 ## Responsive
 

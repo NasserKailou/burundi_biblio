@@ -3,19 +3,15 @@
 @section('titre', 'Espace enseignant')
 
 @section('contenu')
-<h1 class="mb-6 font-heading text-2xl font-semibold text-bns-foreground">Bonjour {{ $user->prenom }}</h1>
+<x-page-header title="Bonjour {{ $user->prenom }}" description="Vue d'ensemble de vos publications sur la plateforme." icon="home" />
 
-<div class="grid gap-6 sm:grid-cols-2">
+<div class="grid gap-6 sm:grid-cols-3">
+    <x-stat-card label="Manuels" :value="$nbManuels" icon="book-open" accent="primary" />
+    <x-stat-card label="Publies" :value="$nbPublies" icon="check-circle" accent="success" />
     <x-card>
-        <h2 class="mb-2 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Mes manuels</h2>
-        <dl class="space-y-1 text-sm text-bns-foreground">
-            <div class="flex justify-between"><dt>Total</dt><dd class="font-medium">{{ $nbManuels }}</dd></div>
-            <div class="flex justify-between"><dt>Publies</dt><dd class="font-medium">{{ $nbPublies }}</dd></div>
-        </dl>
-    </x-card>
-
-    <x-card>
-        <h2 class="mb-2 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Niveaux geres</h2>
+        <h2 class="mb-2 flex items-center gap-2 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">
+            <x-icon name="layers" class="h-4 w-4 text-bns-primary" /> Niveaux geres
+        </h2>
         <p class="text-sm text-bns-foreground">
             {{ $user->niveau?->libelle }}@if($user->niveauxEnseignes->isNotEmpty()), {{ $user->niveauxEnseignes->pluck('libelle')->join(', ') }}@endif
         </p>

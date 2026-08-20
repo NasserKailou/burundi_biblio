@@ -2,6 +2,7 @@
     'variant' => 'primary',
     'type' => 'submit',
     'size' => 'md',
+    'href' => null,
 ])
 
 @php
@@ -17,17 +18,22 @@ $sizes = [
     'md' => 'px-4 py-2 text-sm',
     'lg' => 'px-5 py-2.5 text-base',
 ];
+
+$classes = [
+    'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors duration-150 cursor-pointer',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring focus-visible:ring-offset-2',
+    'disabled:cursor-not-allowed disabled:opacity-50',
+    $variants[$variant] ?? $variants['primary'],
+    $sizes[$size] ?? $sizes['md'],
+];
 @endphp
 
-<button
-    type="{{ $type }}"
-    {{ $attributes->class([
-        'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors duration-150 cursor-pointer',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring focus-visible:ring-offset-2',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        $variants[$variant] ?? $variants['primary'],
-        $sizes[$size] ?? $sizes['md'],
-    ]) }}
->
-    {{ $slot }}
-</button>
+@if ($href)
+    <a href="{{ $href }}" {{ $attributes->class($classes) }}>
+        {{ $slot }}
+    </a>
+@else
+    <button type="{{ $type }}" {{ $attributes->class($classes) }}>
+        {{ $slot }}
+    </button>
+@endif

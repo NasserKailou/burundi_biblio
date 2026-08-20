@@ -3,19 +3,18 @@
 @section('titre', 'Statistiques')
 
 @section('admin-contenu')
-<div class="mb-6 flex items-center justify-between">
-    <h1 class="font-heading text-2xl font-semibold text-bns-foreground">Statistiques</h1>
-    <div class="flex gap-3">
-        <a href="{{ route('admin.statistiques.export', ['format' => 'csv', 'niveau' => $niveauSelectionne]) }}" class="inline-flex items-center rounded-md border border-bns-border bg-white px-4 py-2 text-sm font-medium text-bns-foreground hover:bg-bns-muted">
-            Exporter CSV
-        </a>
-        <a href="{{ route('admin.statistiques.export', ['format' => 'pdf', 'niveau' => $niveauSelectionne]) }}" class="inline-flex items-center rounded-md border border-bns-border bg-white px-4 py-2 text-sm font-medium text-bns-foreground hover:bg-bns-muted">
-            Exporter PDF
-        </a>
-    </div>
-</div>
+<x-page-header title="Statistiques" description="Usage du catalogue et de la plateforme." icon="chart-bar">
+    <x-slot:actions>
+        <x-button variant="secondary" href="{{ route('admin.statistiques.export', ['format' => 'csv', 'niveau' => $niveauSelectionne]) }}">
+            <x-icon name="download" class="h-4 w-4" /> CSV
+        </x-button>
+        <x-button variant="secondary" href="{{ route('admin.statistiques.export', ['format' => 'pdf', 'niveau' => $niveauSelectionne]) }}">
+            <x-icon name="download" class="h-4 w-4" /> PDF
+        </x-button>
+    </x-slot:actions>
+</x-page-header>
 
-<form method="GET" class="mb-6 flex flex-wrap gap-3">
+<form method="GET" class="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-bns-border bg-bns-card p-3 shadow-sm">
     <select name="niveau" class="rounded-md border border-bns-border bg-white px-3 py-2 text-sm shadow-sm">
         <option value="">Tous les niveaux</option>
         @foreach ($niveaux as $niveau)
@@ -27,14 +26,16 @@
         <option value="semaine" @selected($granularite === 'semaine')>Par semaine</option>
         <option value="mois" @selected($granularite === 'mois')>Par mois</option>
     </select>
-    <button type="submit" class="rounded-md border border-bns-border px-4 py-2 text-sm font-medium text-bns-foreground hover:bg-bns-muted">Filtrer</button>
+    <button type="submit" class="inline-flex items-center gap-2 rounded-md border border-bns-border px-4 py-2 text-sm font-medium text-bns-foreground transition-colors hover:bg-bns-muted">
+        <x-icon name="filter" class="h-4 w-4" /> Filtrer
+    </button>
 </form>
 
 <div class="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-    <x-stat-card label="Manuels" :value="$overview['nb_manuels']" />
-    <x-stat-card label="Consultations" :value="$overview['nb_consultations']" />
-    <x-stat-card label="Heures de lecture" :value="$overview['duree_totale_heures']" />
-    <x-stat-card label="Eleves actifs" :value="$overview['nb_eleves_actifs']" />
+    <x-stat-card label="Manuels" :value="$overview['nb_manuels']" icon="book-open" accent="primary" />
+    <x-stat-card label="Consultations" :value="$overview['nb_consultations']" icon="chart-bar" accent="accent" />
+    <x-stat-card label="Heures de lecture" :value="$overview['duree_totale_heures']" icon="clock" accent="success" />
+    <x-stat-card label="Eleves actifs" :value="$overview['nb_eleves_actifs']" icon="users" accent="primary" />
 </div>
 
 <div class="mb-8 grid gap-6 lg:grid-cols-2">

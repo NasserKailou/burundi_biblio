@@ -3,7 +3,7 @@
 @section('titre', 'Mon espace')
 
 @section('contenu')
-<h1 class="mb-6 font-heading text-2xl font-semibold text-bns-foreground">Bonjour {{ $user->prenom }}</h1>
+<x-page-header title="Bonjour {{ $user->prenom }}" description="Retrouvez vos lectures en cours, vos favoris et votre profil." icon="home" />
 
 @if ($manuelsEnCours->isNotEmpty())
 <section class="mb-8">

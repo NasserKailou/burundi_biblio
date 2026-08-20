@@ -37,8 +37,16 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    if (auth()->check()) {
+        $user = auth()->user();
+
+        return redirect()->route(
+            $user->isAdmin() ? 'admin.dashboard' : ($user->isEnseignant() ? 'teacher.dashboard' : 'dashboard')
+        );
+    }
+
+    return view('landing');
+})->name('accueil');
 
 Route::middleware(['auth', 'role:eleve'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

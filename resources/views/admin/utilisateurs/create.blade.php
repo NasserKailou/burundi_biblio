@@ -3,21 +3,29 @@
 @section('titre', 'Ajouter un utilisateur')
 
 @section('admin-contenu')
-<h1 class="mb-6 font-heading text-2xl font-semibold text-bns-foreground">Ajouter un utilisateur</h1>
+<x-page-header title="Ajouter un utilisateur" description="Creez un compte eleve, enseignant ou administrateur." icon="user-plus">
+    <x-slot:actions>
+        <a href="{{ route('admin.utilisateurs.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-bns-muted-foreground hover:text-bns-foreground">
+            <x-icon name="arrow-right" class="h-4 w-4 rotate-180" /> Retour aux utilisateurs
+        </a>
+    </x-slot:actions>
+</x-page-header>
 
-<x-card class="max-w-2xl">
-    @if ($errors->any())
-        <x-alert type="error" class="mb-4">
-            <ul class="list-inside list-disc">
-                @foreach ($errors->all() as $erreur)
-                    <li>{{ $erreur }}</li>
-                @endforeach
-            </ul>
-        </x-alert>
-    @endif
-    <form method="POST" action="{{ route('admin.utilisateurs.store') }}">
-        @csrf
-        @include('admin.utilisateurs._form')
-    </form>
+<x-card class="max-w-2xl !p-0">
+    <div class="p-6">
+        @if ($errors->any())
+            <x-alert type="error" class="mb-4">
+                <ul class="list-inside list-disc">
+                    @foreach ($errors->all() as $erreur)
+                        <li>{{ $erreur }}</li>
+                    @endforeach
+                </ul>
+            </x-alert>
+        @endif
+        <form method="POST" action="{{ route('admin.utilisateurs.store') }}">
+            @csrf
+            @include('admin.utilisateurs._form')
+        </form>
+    </div>
 </x-card>
 @endsection
