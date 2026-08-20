@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManuelController as AdminManuelController;
 use App\Http\Controllers\Admin\MatiereController as AdminMatiereController;
 use App\Http\Controllers\Admin\NiveauController as AdminNiveauController;
+use App\Http\Controllers\Admin\StatsController as AdminStatsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\ConsultationController as ApiConsultationController;
 use App\Http\Controllers\Api\FavoriController as ApiFavoriController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use App\Http\Controllers\Teacher\ManuelController as TeacherManuelController;
+use App\Http\Controllers\Teacher\StatsController as TeacherStatsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -69,6 +71,8 @@ Route::middleware(['auth', 'role:enseignant'])->prefix('teacher')->name('teacher
         Route::put('/{manuel}', [TeacherManuelController::class, 'update'])->name('update');
         Route::delete('/{manuel}', [TeacherManuelController::class, 'destroy'])->name('destroy');
     });
+
+    Route::get('/statistiques', [TeacherStatsController::class, 'index'])->name('statistiques.index');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -115,6 +119,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/configuration', [AdminConfigurationController::class, 'update'])->name('configuration.update');
 
     Route::get('/audit', [AdminAuditController::class, 'index'])->name('audit.index');
+
+    Route::get('/statistiques', [AdminStatsController::class, 'index'])->name('statistiques.index');
+    Route::get('/statistiques/export', [AdminStatsController::class, 'export'])->name('statistiques.export');
 });
 
 Route::middleware('auth')->prefix('api')->name('api.')->group(function () {

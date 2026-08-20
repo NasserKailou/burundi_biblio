@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/catalogue.js',
                 'resources/js/reader.js',
                 'resources/js/fiche-manuel.js',
+                'resources/js/stats.js',
             ],
             refresh: true,
         }),

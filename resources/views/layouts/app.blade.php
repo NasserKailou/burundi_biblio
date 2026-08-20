@@ -22,6 +22,7 @@
                     <div class="hidden items-center gap-4 text-sm sm:flex">
                         <a href="{{ route('teacher.dashboard') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('teacher.dashboard')) font-medium text-bns-primary @endif">Tableau de bord</a>
                         <a href="{{ route('teacher.manuels.index') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('teacher.manuels.*')) font-medium text-bns-primary @endif">Mes manuels</a>
+                        <a href="{{ route('teacher.statistiques.index') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('teacher.statistiques.*')) font-medium text-bns-primary @endif">Statistiques</a>
                     </div>
                 @endif
             </div>

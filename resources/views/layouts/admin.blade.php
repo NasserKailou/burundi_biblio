@@ -19,6 +19,9 @@
             <x-sidebar-link href="{{ route('admin.matieres.index') }}" :active="request()->routeIs('admin.matieres.*')">
                 Matieres
             </x-sidebar-link>
+            <x-sidebar-link href="{{ route('admin.statistiques.index') }}" :active="request()->routeIs('admin.statistiques.*')">
+                Statistiques
+            </x-sidebar-link>
             <x-sidebar-link href="{{ route('admin.configuration.edit') }}" :active="request()->routeIs('admin.configuration.*')">
                 Configuration
             </x-sidebar-link>
