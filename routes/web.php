@@ -9,6 +9,7 @@ use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
+use App\Http\Controllers\Teacher\ManuelController as TeacherManuelController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -53,6 +54,15 @@ Route::middleware('auth')->prefix('lecteur')->name('reader.')->group(function ()
 
 Route::middleware(['auth', 'role:enseignant'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('manuels')->name('manuels.')->group(function () {
+        Route::get('/', [TeacherManuelController::class, 'index'])->name('index');
+        Route::get('/creer', [TeacherManuelController::class, 'create'])->name('create');
+        Route::post('/', [TeacherManuelController::class, 'store'])->name('store');
+        Route::get('/{manuel}/modifier', [TeacherManuelController::class, 'edit'])->name('edit');
+        Route::put('/{manuel}', [TeacherManuelController::class, 'update'])->name('update');
+        Route::delete('/{manuel}', [TeacherManuelController::class, 'destroy'])->name('destroy');
+    });
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

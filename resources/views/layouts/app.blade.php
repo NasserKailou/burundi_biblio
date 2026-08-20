@@ -18,6 +18,11 @@
                         <a href="{{ route('dashboard') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('dashboard')) font-medium text-bns-primary @endif">Mon espace</a>
                         <a href="{{ route('catalogue.index') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('catalogue.*')) font-medium text-bns-primary @endif">Catalogue</a>
                     </div>
+                @elseif (auth()->user()->isEnseignant())
+                    <div class="hidden items-center gap-4 text-sm sm:flex">
+                        <a href="{{ route('teacher.dashboard') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('teacher.dashboard')) font-medium text-bns-primary @endif">Tableau de bord</a>
+                        <a href="{{ route('teacher.manuels.index') }}" class="text-bns-muted-foreground hover:text-bns-foreground @if(request()->routeIs('teacher.manuels.*')) font-medium text-bns-primary @endif">Mes manuels</a>
+                    </div>
                 @endif
             </div>
             <div class="flex items-center gap-4 text-sm">
