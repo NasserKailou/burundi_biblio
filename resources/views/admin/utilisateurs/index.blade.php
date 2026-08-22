@@ -1,124 +1,125 @@
-@extends('layouts.admin')
+@extends('layouts.adminlte')
 
-@section('titre', 'Utilisateurs')
+@section('page-title', 'Utilisateurs')
+@section('page-description', 'Gerez les comptes eleves, enseignants et administrateurs.')
 
-@section('admin-contenu')
-<x-page-header title="Utilisateurs" description="Gerez les comptes eleves, enseignants et administrateurs." icon="users">
-    <x-slot:actions>
-        <x-button variant="secondary" href="{{ route('admin.utilisateurs.importer.form') }}">
-            <x-icon name="download" class="h-4 w-4" /> Importer un CSV
-        </x-button>
-        <x-button variant="primary" href="{{ route('admin.utilisateurs.create') }}">
-            <x-icon name="user-plus" class="h-4 w-4" /> Ajouter un utilisateur
-        </x-button>
-    </x-slot:actions>
-</x-page-header>
+@section('page-actions')
+    <a href="{{ route('admin.utilisateurs.importer.form') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-download"></i> Importer un CSV
+    </a>
+    <a href="{{ route('admin.utilisateurs.create') }}" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i> Ajouter un utilisateur
+    </a>
+@endsection
+
+@section('adminlte-contenu')
 
 @if (session('erreurs_import'))
-    <x-alert type="warning" class="mb-4">
-        <ul class="list-inside list-disc">
+    <div class="alert alert-warning bns-reveal">
+        <ul class="mb-0 pl-3">
             @foreach (session('erreurs_import') as $erreur)
                 <li>{{ $erreur }}</li>
             @endforeach
         </ul>
-    </x-alert>
+    </div>
 @endif
 
-<form method="GET" class="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-bns-border bg-bns-card p-3 shadow-sm">
-    <div class="relative min-w-[220px] flex-1">
-        <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-bns-muted-foreground" />
-        <input type="text" name="q" value="{{ request('q') }}" placeholder="Nom, prenom, identifiant..."
-            class="w-full rounded-md border border-bns-border py-2 pl-9 pr-3 text-sm shadow-sm transition-colors focus:border-bns-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring">
+<form method="GET" class="form-inline card card-body bns-reveal mb-4">
+    <div class="input-group mr-2 mb-2 flex-grow-1" style="min-width:220px;">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-magnifying-glass"></i></span>
+        </div>
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Nom, prenom, identifiant..." class="form-control">
     </div>
-    <select name="role" class="rounded-md border border-bns-border bg-white px-3 py-2 text-sm shadow-sm">
+    <select name="role" class="form-control mr-2 mb-2">
         <option value="">Tous les roles</option>
         @foreach (['admin', 'enseignant', 'eleve'] as $r)
             <option value="{{ $r }}" @selected(request('role') === $r)>{{ ucfirst($r) }}</option>
         @endforeach
     </select>
-    <select name="statut" class="rounded-md border border-bns-border bg-white px-3 py-2 text-sm shadow-sm">
+    <select name="statut" class="form-control mr-2 mb-2">
         <option value="">Tous les statuts</option>
         <option value="actif" @selected(request('statut') === 'actif')>Actif</option>
         <option value="inactif" @selected(request('statut') === 'inactif')>Inactif / en attente</option>
     </select>
-    <button type="submit" class="inline-flex items-center gap-2 rounded-md border border-bns-border px-4 py-2 text-sm font-medium text-bns-foreground transition-colors hover:bg-bns-muted">
-        <x-icon name="filter" class="h-4 w-4" /> Filtrer
+    <button type="submit" class="btn btn-outline-secondary mb-2">
+        <i class="fas fa-filter"></i> Filtrer
     </button>
 </form>
 
-<div class="overflow-hidden rounded-xl border border-bns-border bg-bns-card shadow-sm">
+<div class="card bns-reveal">
+    <div class="card-body p-0">
     @if ($utilisateurs->isEmpty())
-        <x-empty-state icon="users" title="Aucun utilisateur ne correspond a ces criteres" description="Ajustez vos filtres ou ajoutez un nouvel utilisateur.">
-            <x-slot:action>
-                <x-button variant="secondary" href="{{ route('admin.utilisateurs.create') }}">
-                    <x-icon name="user-plus" class="h-4 w-4" /> Ajouter un utilisateur
-                </x-button>
-            </x-slot:action>
-        </x-empty-state>
+        <div class="text-center text-muted py-5">
+            <i class="fas fa-users fa-2x mb-2"></i>
+            <p class="mb-1">Aucun utilisateur ne correspond a ces criteres</p>
+            <p class="small">Ajustez vos filtres ou ajoutez un nouvel utilisateur.</p>
+            <a href="{{ route('admin.utilisateurs.create') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-user-plus"></i> Ajouter un utilisateur
+            </a>
+        </div>
     @else
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-bns-border text-sm">
-                <thead class="bg-bns-muted/70">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Nom</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Identifiant</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Role</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Niveau</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Statut</th>
-                        <th class="px-4 py-3"></th>
+                        <th>Nom</th>
+                        <th>Identifiant</th>
+                        <th>Role</th>
+                        <th>Niveau</th>
+                        <th>Statut</th>
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-bns-border">
+                <tbody>
                     @foreach ($utilisateurs as $u)
-                        <tr class="transition-colors hover:bg-bns-muted/40">
-                            <td class="px-4 py-3">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-600/10 text-xs font-semibold text-bns-primary">
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-primary mr-2" style="border-radius:50%;width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;">
                                         {{ strtoupper(mb_substr($u->prenom, 0, 1) . mb_substr($u->nom, 0, 1)) }}
                                     </span>
-                                    <span class="font-medium text-bns-foreground">{{ $u->nomComplet() }}</span>
+                                    <span class="font-weight-bold">{{ $u->nomComplet() }}</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-bns-muted-foreground">{{ $u->identifiant }}</td>
-                            <td class="px-4 py-3"><x-badge color="primary">{{ ucfirst($u->role?->libelle) }}</x-badge></td>
-                            <td class="px-4 py-3 text-bns-muted-foreground">{{ $u->niveau?->libelle ?? '—' }}</td>
-                            <td class="px-4 py-3">
-                                <x-badge :color="$u->actif ? 'success' : 'muted'">{{ $u->actif ? 'Actif' : 'En attente' }}</x-badge>
+                            <td class="text-muted">{{ $u->identifiant }}</td>
+                            <td><span class="badge badge-primary">{{ ucfirst($u->role?->libelle) }}</span></td>
+                            <td class="text-muted">{{ $u->niveau?->libelle ?? '—' }}</td>
+                            <td>
+                                <span class="badge {{ $u->actif ? 'badge-success' : 'badge-secondary' }}">{{ $u->actif ? 'Actif' : 'En attente' }}</span>
                             </td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right">
-                                <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('admin.utilisateurs.edit', $u) }}" title="Modifier" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-primary transition-colors hover:bg-teal-600/10">
-                                        <x-icon name="pencil" class="h-4 w-4" />
-                                    </a>
-                                    @if (! $u->actif)
-                                        <form method="POST" action="{{ route('admin.utilisateurs.activer', $u) }}">
-                                            @csrf
-                                            <button type="submit" title="Valider le compte" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-success transition-colors hover:bg-emerald-50">
-                                                <x-icon name="check-circle" class="h-4 w-4" />
-                                            </button>
-                                        </form>
-                                    @else
-                                        <form method="POST" action="{{ route('admin.utilisateurs.desactiver', $u) }}">
-                                            @csrf
-                                            <button type="submit" title="Desactiver" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-muted-foreground transition-colors hover:bg-bns-muted">
-                                                <x-icon name="x-circle" class="h-4 w-4" />
-                                            </button>
-                                        </form>
-                                    @endif
-                                    <form method="POST" action="{{ route('admin.utilisateurs.reinitialiser-mdp', $u) }}" data-confirm="Reinitialiser le mot de passe de cet utilisateur ?">
+                            <td class="text-right text-nowrap">
+                                <a href="{{ route('admin.utilisateurs.edit', $u) }}" title="Modifier" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                @if (! $u->actif)
+                                    <form method="POST" action="{{ route('admin.utilisateurs.activer', $u) }}" class="d-inline">
                                         @csrf
-                                        <button type="submit" title="Reinitialiser le mot de passe" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-muted-foreground transition-colors hover:bg-bns-muted">
-                                            <x-icon name="lock" class="h-4 w-4" />
+                                        <button type="submit" title="Valider le compte" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-check-circle"></i>
                                         </button>
                                     </form>
-                                    <form method="POST" action="{{ route('admin.utilisateurs.destroy', $u) }}" data-confirm="Supprimer cet utilisateur ?">
+                                @else
+                                    <form method="POST" action="{{ route('admin.utilisateurs.desactiver', $u) }}" class="d-inline">
                                         @csrf
-                                        @method('DELETE')
-                                        <button type="submit" title="Supprimer" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-destructive transition-colors hover:bg-red-50">
-                                            <x-icon name="trash" class="h-4 w-4" />
+                                        <button type="submit" title="Desactiver" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-xmark"></i>
                                         </button>
                                     </form>
-                                </div>
+                                @endif
+                                <form method="POST" action="{{ route('admin.utilisateurs.reinitialiser-mdp', $u) }}" data-confirm="Reinitialiser le mot de passe de cet utilisateur ?" class="d-inline">
+                                    @csrf
+                                    <button type="submit" title="Reinitialiser le mot de passe" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-lock"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.utilisateurs.destroy', $u) }}" data-confirm="Supprimer cet utilisateur ?" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" title="Supprimer" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -126,7 +127,8 @@
             </table>
         </div>
     @endif
+    </div>
 </div>
 
-<div class="mt-4">{{ $utilisateurs->links() }}</div>
+<div class="mt-3">{{ $utilisateurs->links() }}</div>
 @endsection

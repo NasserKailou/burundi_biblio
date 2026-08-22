@@ -117,7 +117,23 @@ Mot de passe commun par rôle (démo uniquement — à changer en production) :
 
 **Nouvelle règle de workflow** (mémorisée) : mettre à jour ce fichier et pousser sur `origin` (https://github.com/NasserKailou/burundi_biblio.git, branche `master`) à la fin de chaque session sur ce projet, pas seulement sur demande explicite.
 
-## Session 4 — 2026-08-22 : refonte professionnelle AdminLTE 3 + charte Burundi (en cours)
+## Session 3 — 2026-08-20 : refonte visuelle globale + espace public
+
+**Signalé par l'utilisateur** : le correctif 500 fonctionne, mais insatisfaction claire sur le design du back-office admin (exemples cités : `/admin/manuels/creer`, `/admin/niveaux`) malgré la demande initiale d'utiliser `ui-ux-pro-max-skill`. Trois demandes explicites : (1) revoir le template global de la plateforme, (2) prévoir un espace grand public sur `/` avant la page de connexion, (3) design général "très professionnel, très joli".
+
+**Skill `ui-ux-pro-max`** : réinvoqué avec des requêtes ciblées (`--domain icons`, `--domain ux`, `--domain landing`) plutôt que le mode `--design-system` agrégé (déjà signalé peu fiable en session précédente). Résultats exploités : bibliothèque d'icônes recommandée (Phosphor — noms retenus : `house`, `users`, `book-open`, `tag`, `gear`, `shield`, `chart-bar`/`chart-pie`, `pencil-simple`, `trash`, `plus`, `magnifying-glass`, `sign-out`), implémentés en SVG outline maison (pas de dépendance npm supplémentaire, cohérent avec la contrainte "zéro dépendance Internet"). Guidance UX table/formulaire (bulk actions, hover vs tap, empty states) et pattern `feature-rich-showcase` (hero > grille de fonctionnalités > preuve/mécanique > CTA final) retenu pour la page publique.
+
+**Nouveaux composants partagés** (`resources/views/components/`) : `icon.blade.php` (registre de ~30 icônes SVG outline), `page-header.blade.php` (titre + description + actions, uniformise l'en-tête de toutes les pages admin/enseignant), `empty-state.blade.php`, `form-section.blade.php` (regroupe les formulaires longs en sections titrées avec séparateurs). `button.blade.php` étendu pour accepter un prop `href` (rend un `<a>` stylé identique à un `<button>`, nécessaire pour les CTA de type lien). `stat-card.blade.php` et `sidebar-link.blade.php` étendus avec un prop `icon` optionnel (rétrocompatibles).
+
+**Refonte du template global** : `layouts/admin.blade.php` — barre latérale reconstruite en carte (fond blanc, ombre, coins arrondis) avec icônes par lien et regroupement en 3 sections (Pilotage / Gestion / Système). `layouts/app.blade.php` — barre de navigation supérieure sticky avec avatar (initiales), rôle affiché, icônes sur les liens actifs, bouton de déconnexion iconifié.
+
+**Pages retravaillées** (mêmes routes/contrôleurs/champs de formulaire, changement visuel uniquement) : tout le CRUD admin (`manuels`, `niveaux`, `matieres`, `utilisateurs` + import CSV, `audit`, `configuration`), le tableau de bord admin (cartes de raccourcis), les statistiques (admin + enseignant), le CRUD `teacher/manuels`, les tableaux de bord élève/enseignant, et la page catalogue élève (barre de filtre en carte, icône de recherche). Tables uniformisées : en-têtes plus contrastés, lignes avec hover, actions représentées par des boutons icône (modifier/supprimer/valider/désactiver/réinitialiser mot de passe), états vides gérés via `x-empty-state`. Formulaires longs découpés en sections (`x-form-section`), sélecteurs de niveaux transformés en "chips" cliquables (`has-[:checked]:` Tailwind, nécessite Tailwind ≥ 3.4, déjà en place).
+
+**Nouvel espace public** : `resources/views/landing.blade.php`, page autonome (pas d'auth requise) — en-tête sticky avec logo + liens "Se connecter"/"Créer un compte", hero en dégradé teal avec formes décoratives animées (réutilise les classes `.bns-blob`/`.bns-fade-in-up` déjà définies pour les écrans d'auth), grille de 6 fonctionnalités, section "Comment ça marche" en 3 étapes, bandeau CTA final, pied de page. Route racine (`routes/web.php`) modifiée : `GET /` affiche désormais cette page pour un visiteur non connecté ; si l'utilisateur est déjà authentifié, redirection directe vers son tableau de bord (admin/enseignant/élève) au lieu de repasser par `/login`.
+
+**Vérifié en conditions réelles** (`php artisan serve` + navigateur, connexions successives `admin`/`enseignant1`/`eleve1` avec les identifiants de démo) : page publique `/` (200, aucune erreur console), `/admin/manuels/creer`, `/admin/niveaux`, tableau de bord admin, `/admin/utilisateurs`, `/admin/matieres`, `/admin/audit`, `/admin/configuration`, `/admin/statistiques`, `/teacher/manuels`, `/teacher/manuels/creer`, tableau de bord enseignant, tableau de bord élève, `/catalogue` — toutes rendues sans erreur console ni erreur Blade. `npm run build` exécuté sans erreur avant les tests.
+
+## Session 4 — 2026-08-22 : refonte professionnelle AdminLTE 3 + charte Burundi
 
 **Demande explicite de l'utilisateur** : remplacer le design Tailwind maison (sessions 1-3)
 par **AdminLTE 3** sur tout le back-office, appliquer une charte graphique **Burundi**
@@ -155,22 +171,23 @@ donc été faite directement par calcul plutôt que reprise du skill, cohérent 
 protocole de repli déjà documenté en session 1 (rejeter un résultat non pertinent et le
 documenter plutôt que l'appliquer aveuglément).
 
-**Étape 3 (feat, en cours)** : intégration AdminLTE.
+**Étape 3 (feat, terminée)** : intégration AdminLTE.
 - `composer require jeroennoten/laravel-adminlte`, `php artisan adminlte:install` +
   `adminlte:plugins install --plugin=datatables,select2,sweetalert2,toastr,chartJs`
-  (Pace/progress-bar volontairement désactivé — plugin cosmétique non essentiel).
+  (Pace/progress-bar volontairement désactivé — plugin cosmétique non essentiel ;
+  `chartJs` finalement désactivé aussi, voir étapes 4-6 ci-dessous).
 - `config/adminlte.php` : titre, logo (placeholder SVG `public/images/logo-etablissement.svg`
   — **à remplacer par le vrai logo de l'établissement**, emplacement réservé comme demandé),
-  `google_fonts.allowed = false` (évite un CDN Google Fonts par défaut), `sidebar_collapse
-  = true`, `use_route_url = true`. **Menu unique** (pas 3 sidebars séparées) filtré par
-  rôle via des *Gates* Laravel (`'can' => 'is-admin'|'is-enseignant'|'is-eleve'`, définies
-  dans `AppServiceProvider::boot()`) — reste compatible `config:cache` car le filtrage se
-  fait au rendu. Items admin : Tableau de bord, Statistiques, Utilisateurs, Catalogue,
-  Niveaux, Matières, Configuration, Journaux d'audit. **"Sauvegardes" volontairement
-  omis** : aucune interface web n'existe pour déclencher `mysqldump` depuis le navigateur
+  `google_fonts.allowed = false` (évite un CDN Google Fonts par défaut), `use_route_url = true`.
+  **Menu unique** (pas 3 sidebars séparées) filtré par rôle via des *Gates* Laravel
+  (`'can' => 'is-admin'|'is-enseignant'|'is-eleve'`, définies dans
+  `AppServiceProvider::boot()`) — reste compatible `config:cache` car le filtrage se fait
+  au rendu. Items admin : Tableau de bord, Statistiques, Utilisateurs, Catalogue, Niveaux,
+  Matières, Configuration, Journaux d'audit. **"Sauvegardes" volontairement omis** :
+  aucune interface web n'existe pour déclencher `mysqldump` depuis le navigateur
   (`scripts/sauvegarde.sh` reste un outil serveur, section 12) — ajouter un lien mort ou
   bâtir une UI de déclenchement de sauvegarde dépasserait le périmètre "refonte visuelle"
-  annoncé, décision documentée ici plutôt que pyivré silencieusement. Items enseignant :
+  annoncé, décision documentée ici plutôt que prise silencieusement. Items enseignant :
   Tableau de bord, Mes ressources, Téléverser un manuel, Statistiques. Items élève :
   Accueil, Catalogue (« Reprendre la lecture »/« Mes favoris »/« Mon profil » restent des
   sections du tableau de bord élève, pas des routes dédiées — aucune de ces routes
@@ -193,43 +210,94 @@ documenter plutôt que l'appliquer aveuglément).
   natif, cohérent avec le retrait des `onsubmit` pour la CSP en session 1), init
   DataTables/Select2 sur les éléments marqués `data-datatable`/`data-select2`.
 - `resources/js/bns-colors.js` : palette Chart.js mise à jour aux couleurs Burundi.
-- **Première vue migrée à titre de preuve de bout en bout** : `dashboard/admin.blade.php`
-  (`@extends('layouts.adminlte')`, KPIs en `small-box`, cartes de raccourci en `card`).
-  **Vérifié en conditions réelles** (`php artisan serve` sur SQLite local + `curl`,
-  identifiants de démo) : connexion admin → `/admin/dashboard` 200, sidebar affiche
-  uniquement les items admin (aucune fuite des items enseignant/élève — RBAC de menu
-  vérifié), CSS Burundi chargé, aucune erreur PHP dans la réponse ; connexion élève →
-  `/admin/dashboard` toujours 403 (RBAC applicatif intact, indépendant du menu) ;
-  `/dashboard` élève (page pas encore migrée) toujours 200 sur l'ancien layout Tailwind —
-  confirme que la double surface (AdminLTE + Tailwind en parallèle pendant la migration
-  progressive) ne casse rien.
-- Reste à faire (étapes 4-10 du plan, voir liste de tâches) : migrer les ~24 vues
-  restantes (admin/teacher/eleve/catalogue/reader) vers `layouts/adminlte.blade.php` avec
-  markup AdminLTE natif (`card`, `table` + DataTables, `badge`, formulaires Bootstrap) ;
-  recolorer le site public restant si besoin ; vérification responsive/accessibilité
-  finale ; retirer `layouts/admin.blade.php` et `layouts/app.blade.php` une fois plus
-  aucune vue ne les référence (actuellement encore utilisés par les vues non migrées, donc
-  conservés pour l'instant).
+- Première vue migrée à titre de preuve de bout en bout : `dashboard/admin.blade.php`
+  (KPIs en `small-box`, cartes de raccourci en `card`).
+
+**Étapes 4-6 (feat, terminées)** : migration des ~24 vues restantes (admin/enseignant/
+élève/catalogue) déléguée à 3 agents en parallèle (fichiers disjoints), sur la base du
+patron établi par `dashboard/admin.blade.php`. Repris manuellement pour
+`reader/show.blade.php` (voir plus bas) — écarté des agents dès le départ, trop fragile
+(historique de 6 bugs réels PDF.js/EPUB.js, étape 6 session 1).
+
+**Session interrompue par une bascule en Plan Mode** pendant l'exécution des 3 agents
+(déclenchée côté utilisateur) — les 3 agents avaient terminé leur phase de recherche
+(aucune édition de fichier) au moment de la bascule ; les 3 ont **indépendamment détecté
+le même bug** de nommage de pile de scripts (`@push('scripts')` côté vue vs
+`@stack('page-scripts')` côté layout — corrigé une seule fois côté layout,
+`@stack('scripts')`, plutôt que dans chaque vue individuellement). Plan revu et validé par
+l'utilisateur (`ExitPlanMode`), puis les 3 agents relancés pour exécuter leurs plans.
+
+- `layouts/app.blade.php` (Tailwind, navbar) : plus aucune vue ne l'utilise → **supprimé**,
+  avec `layouts/admin.blade.php` (Tailwind, sidebar) et les composants `x-*` devenus
+  orphelins (`page-header`, `card`, `empty-state`, `form-section`, `stat-card`,
+  `book-cover`, `sidebar-link`). Conservés (encore utilisés par le site public/auth
+  Tailwind) : `button`, `badge`, `icon`, `alert`, `input`, `select`, `chart` (ce dernier
+  réutilisé tel quel par les pages statistiques AdminLTE — rend un `<canvas
+  data-chart-*>` + tableau `sr-only` accessible, indépendant du framework CSS).
+- `reader/show.blade.php` : **volontairement rendu totalement autonome** (son propre
+  `<!DOCTYPE html>`, continue de charger `app.css`/Tailwind) plutôt que d'étendre
+  `layouts.adminlte` — c'est un lecteur plein écran (`fixed inset-0 z-40`) qui masque de
+  toute façon tout chrome de navigation, et ses classes Tailwind (`bg-bns-reader`, etc.)
+  n'auraient eu aucun style sous le layout Bootstrap/AdminLTE (les deux frameworks ne
+  chargent jamais leur CSS sur la même page, cf. `docs/design-system.md`). Seul le
+  wrapper HTML a changé ; le contenu de `div#lecteur` et
+  `@vite(['resources/js/reader.js'])` n'ont pas été touchés au caractère près.
+- `resources/js/catalogue.js` : le gabarit de carte injecté en AJAX (`carteManuel()`)
+  utilisait encore des classes Tailwind (`aspect-[3/4]`, `bg-bns-muted`, `font-heading`,
+  etc.) — **régression réelle et pas seulement esthétique**, repérée après coup (le
+  fichier avait été explicitement exclu du périmètre des agents par prudence) : une fois
+  `catalogue/index.blade.php` passé sous le layout AdminLTE, ces classes n'avaient plus
+  aucun CSS derrière elles (Tailwind n'est plus chargé sur cette page) → converti en
+  markup Bootstrap (`col-6 col-md-4 col-lg-3` + `card`/`card-img-top`, badge "Commun" en
+  `badge-success`). Aucun autre fichier JS ne dépendait de ces classes (vérifié par
+  lecture complète de `stats.js`, `reader.js`, `fiche-manuel.js`, `app.js`).
+- **3 bugs réels trouvés et corrigés en testant dans un vrai navigateur** (outils MCP
+  chrome-devtools, pas seulement `curl`) :
+  1. `sidebar_collapse => true` dans `config/adminlte.php` démarre la sidebar en mode
+     "mini" (icônes seules, extension au survol en superposition du contenu) — confusion
+     visuelle constatée en capture d'écran. Repassé à `false` : sidebar étendue par
+     défaut, toujours repliable via le bouton de la navbar (`data-widget="pushmenu"`,
+     fourni nativement par AdminLTE) — satisfait "sidebar rétractable" sans le mode
+     survol source de confusion.
+  2. **Deux instances Chart.js en conflit** : le plugin AdminLTE `Chartjs` (v2.7,
+     vendorisé dans `public/vendor/chart.js`) avait été activé par erreur à l'étape 3
+     alors que le projet dépend déjà de `chart.js@4.5.1` via npm (bundlé par Vite dans
+     `resources/js/stats.js` depuis la session 1). Les deux coexistaient sans erreur JS
+     visible en console, mais aucun graphique ne se dessinait. Corrigé en désactivant le
+     plugin AdminLTE (`'Chartjs' => ['active' => false]`) — une seule source de vérité
+     Chart.js, celle déjà en place et déjà testée.
+  3. Canvas Chart.js sans hauteur de conteneur contrainte → le graphique en anneau
+     "Répartition par matière" débordait de sa carte. Corrigé par une règle CSS ciblée
+     (`.card-body canvas[data-chart] { max-height: 320px; }`), sans toucher
+     `resources/js/stats.js` ni le contrat `data-chart-*` qu'il lit.
+- **Incident environnemental identifié et corrigé** (même classe de bug que l'incident
+  documenté en session 1) : plusieurs processus `php artisan serve --port=8817`
+  restaient liés au même port sur Windows après des `pkill` successifs depuis Git Bash
+  (qui ne tue pas fiablement les processus natifs Windows), causant une bascule de
+  session aléatoire entre utilisateurs de test. Résolu en identifiant les PID exacts via
+  PowerShell (`Get-CimInstance Win32_Process -Filter "Name = 'php.exe'"`) et en les
+  arrêtant individuellement (`Stop-Process -Id <pid>`), jamais par nom de processus
+  générique.
+- **Vérifié en conditions réelles** (navigateur piloté, pas seulement `curl`) : connexion
+  admin/enseignant/élève, toutes les pages admin (utilisateurs + CRUD, manuels + CRUD,
+  niveaux, matières, configuration, audit, statistiques avec graphiques), toutes les
+  pages enseignant, toutes les pages élève (dashboard, catalogue, fiche manuel, lecteur),
+  site public — 0 erreur console sur toutes les pages testées, `php artisan test` toujours
+  vert (29/29), `npm run build` sans erreur. Géométrie de la sidebar vérifiée par mesure
+  DOM directe (`getBoundingClientRect`) en plus des captures d'écran — l'outil de capture
+  de cet environnement a occasionnellement produit un artefact de rendu non représentatif
+  du DOM réel, même limite déjà documentée en session 1 pour le rendu PDF.js/EPUB.js.
 
 **Incident local (session courante)** : `.env` local (non versionné, utilisé pour les
-tests `php artisan serve` sans Docker) écrasé par erreur avec le contenu de `.env.example`
-avant vérification de son contenu — corrigé en le reconfigurant pour SQLite local
-(`DB_CONNECTION=sqlite`, `php artisan key:generate`) afin de pouvoir continuer les
-vérifications en conditions réelles. Aucun impact sur le dépôt git (fichier ignoré) ni sur
-un éventuel déploiement réel de l'utilisateur (`.env` de déploiement séparé, cf. session 2) — mais action prise sans vérification préalable, à éviter à l'avenir.
+tests `php artisan serve` sans Docker) écrasé par erreur avec le contenu de
+`.env.example` avant vérification de son contenu — corrigé en le reconfigurant pour
+SQLite local (`DB_CONNECTION=sqlite`, `php artisan key:generate`) afin de pouvoir
+continuer les vérifications en conditions réelles. Aucun impact sur le dépôt git (fichier
+ignoré) ni sur un éventuel déploiement réel de l'utilisateur (`.env` de déploiement
+séparé, cf. session 2) — mais action prise sans vérification préalable, à éviter à
+l'avenir.
 
-## Session 3 — 2026-08-20 : refonte visuelle globale + espace public
-
-**Signalé par l'utilisateur** : le correctif 500 fonctionne, mais insatisfaction claire sur le design du back-office admin (exemples cités : `/admin/manuels/creer`, `/admin/niveaux`) malgré la demande initiale d'utiliser `ui-ux-pro-max-skill`. Trois demandes explicites : (1) revoir le template global de la plateforme, (2) prévoir un espace grand public sur `/` avant la page de connexion, (3) design général "très professionnel, très joli".
-
-**Skill `ui-ux-pro-max`** : réinvoqué avec des requêtes ciblées (`--domain icons`, `--domain ux`, `--domain landing`) plutôt que le mode `--design-system` agrégé (déjà signalé peu fiable en session précédente). Résultats exploités : bibliothèque d'icônes recommandée (Phosphor — noms retenus : `house`, `users`, `book-open`, `tag`, `gear`, `shield`, `chart-bar`/`chart-pie`, `pencil-simple`, `trash`, `plus`, `magnifying-glass`, `sign-out`), implémentés en SVG outline maison (pas de dépendance npm supplémentaire, cohérent avec la contrainte "zéro dépendance Internet"). Guidance UX table/formulaire (bulk actions, hover vs tap, empty states) et pattern `feature-rich-showcase` (hero > grille de fonctionnalités > preuve/mécanique > CTA final) retenu pour la page publique.
-
-**Nouveaux composants partagés** (`resources/views/components/`) : `icon.blade.php` (registre de ~30 icônes SVG outline), `page-header.blade.php` (titre + description + actions, uniformise l'en-tête de toutes les pages admin/enseignant), `empty-state.blade.php`, `form-section.blade.php` (regroupe les formulaires longs en sections titrées avec séparateurs). `button.blade.php` étendu pour accepter un prop `href` (rend un `<a>` stylé identique à un `<button>`, nécessaire pour les CTA de type lien). `stat-card.blade.php` et `sidebar-link.blade.php` étendus avec un prop `icon` optionnel (rétrocompatibles).
-
-**Refonte du template global** : `layouts/admin.blade.php` — barre latérale reconstruite en carte (fond blanc, ombre, coins arrondis) avec icônes par lien et regroupement en 3 sections (Pilotage / Gestion / Système). `layouts/app.blade.php` — barre de navigation supérieure sticky avec avatar (initiales), rôle affiché, icônes sur les liens actifs, bouton de déconnexion iconifié.
-
-**Pages retravaillées** (mêmes routes/contrôleurs/champs de formulaire, changement visuel uniquement) : tout le CRUD admin (`manuels`, `niveaux`, `matieres`, `utilisateurs` + import CSV, `audit`, `configuration`), le tableau de bord admin (cartes de raccourcis), les statistiques (admin + enseignant), le CRUD `teacher/manuels`, les tableaux de bord élève/enseignant, et la page catalogue élève (barre de filtre en carte, icône de recherche). Tables uniformisées : en-têtes plus contrastés, lignes avec hover, actions représentées par des boutons icône (modifier/supprimer/valider/désactiver/réinitialiser mot de passe), états vides gérés via `x-empty-state`. Formulaires longs découpés en sections (`x-form-section`), sélecteurs de niveaux transformés en "chips" cliquables (`has-[:checked]:` Tailwind, nécessite Tailwind ≥ 3.4, déjà en place).
-
-**Nouvel espace public** : `resources/views/landing.blade.php`, page autonome (pas d'auth requise) — en-tête sticky avec logo + liens "Se connecter"/"Créer un compte", hero en dégradé teal avec formes décoratives animées (réutilise les classes `.bns-blob`/`.bns-fade-in-up` déjà définies pour les écrans d'auth), grille de 6 fonctionnalités, section "Comment ça marche" en 3 étapes, bandeau CTA final, pied de page. Route racine (`routes/web.php`) modifiée : `GET /` affiche désormais cette page pour un visiteur non connecté ; si l'utilisateur est déjà authentifié, redirection directe vers son tableau de bord (admin/enseignant/élève) au lieu de repasser par `/login`.
-
-**Vérifié en conditions réelles** (`php artisan serve` + navigateur, connexions successives `admin`/`enseignant1`/`eleve1` avec les identifiants de démo) : page publique `/` (200, aucune erreur console), `/admin/manuels/creer`, `/admin/niveaux`, tableau de bord admin, `/admin/utilisateurs`, `/admin/matieres`, `/admin/audit`, `/admin/configuration`, `/admin/statistiques`, `/teacher/manuels`, `/teacher/manuels/creer`, tableau de bord enseignant, tableau de bord élève, `/catalogue` — toutes rendues sans erreur console ni erreur Blade. `npm run build` exécuté sans erreur avant les tests.
+**Reste à faire** : étape 7 (le socle animations/toasts est posé depuis l'étape 3 —
+vérifier qu'il se déclenche bien sur de vraies actions CRUD en plus des flash messages),
+étape 9 (vérification responsive/clavier plus poussée), étape 10 (README à jour,
+vérification finale de la Definition of Done section 8 du cahier des charges).

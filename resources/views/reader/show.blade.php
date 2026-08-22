@@ -1,8 +1,19 @@
-@extends('layouts.app')
-
-@section('titre', $manuel->titre)
-
-@section('contenu')
+{{-- Lecteur immersif plein ecran (fixed inset-0 z-40) : ne s'etend d'aucun layout
+     partage. Volontairement independant d'AdminLTE (le back-office recolore en
+     Bootstrap ne charge pas les classes utilitaires Tailwind qu'utilise ce lecteur) et
+     d'un chrome de navigation qu'il masquerait de toute facon a l'ecran. Contenu
+     interne (div#lecteur et tout ce qu'il contient) volontairement non modifie -
+     integration PDF.js/EPUB.js fragile, voir context.md etape 6. --}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $manuel->titre }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-bns-reader font-sans text-bns-foreground antialiased">
 <div
     id="lecteur"
     class="fixed inset-0 z-40 flex flex-col bg-bns-reader"
@@ -73,8 +84,7 @@
 
     <p id="lecteur-statut" class="sr-only" role="status" aria-live="polite"></p>
 </div>
-@endsection
 
-@push('scripts')
-    @vite(['resources/js/reader.js'])
-@endpush
+@vite(['resources/js/reader.js'])
+</body>
+</html>

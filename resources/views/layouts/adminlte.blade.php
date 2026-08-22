@@ -74,5 +74,5 @@
             });
         </script>
     @endif
-    @stack('page-scripts')
+    @stack('scripts')
 @endpush

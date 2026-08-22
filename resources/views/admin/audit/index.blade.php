@@ -1,56 +1,61 @@
-@extends('layouts.admin')
+@extends('layouts.adminlte')
 
-@section('titre', "Journaux d'audit")
+@section('page-title', "Journaux d'audit")
+@section('page-description', 'Historique des actions sensibles effectuees sur la plateforme.')
 
-@section('admin-contenu')
-<x-page-header title="Journaux d'audit" description="Historique des actions sensibles effectuees sur la plateforme." icon="shield-check" />
+@section('adminlte-contenu')
 
-<form method="GET" class="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-bns-border bg-bns-card p-3 shadow-sm">
-    <div class="relative min-w-[220px] flex-1">
-        <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-bns-muted-foreground" />
-        <input type="text" name="action" value="{{ request('action') }}" placeholder="Filtrer par action..."
-            class="w-full rounded-md border border-bns-border py-2 pl-9 pr-3 text-sm shadow-sm transition-colors focus:border-bns-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring">
+<form method="GET" class="form-inline card card-body bns-reveal mb-4">
+    <div class="input-group mr-2 mb-2 flex-grow-1" style="min-width:220px;">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-magnifying-glass"></i></span>
+        </div>
+        <input type="text" name="action" value="{{ request('action') }}" placeholder="Filtrer par action..." class="form-control">
     </div>
-    <button type="submit" class="inline-flex items-center gap-2 rounded-md border border-bns-border px-4 py-2 text-sm font-medium text-bns-foreground transition-colors hover:bg-bns-muted">
-        <x-icon name="filter" class="h-4 w-4" /> Filtrer
+    <button type="submit" class="btn btn-outline-secondary mb-2">
+        <i class="fas fa-filter"></i> Filtrer
     </button>
 </form>
 
-<div class="overflow-hidden rounded-xl border border-bns-border bg-bns-card shadow-sm">
+<div class="card bns-reveal">
+    <div class="card-body p-0">
     @if ($logs->isEmpty())
-        <x-empty-state icon="shield-check" title="Aucune entree d'audit" description="Aucune action ne correspond a ces criteres pour le moment." />
+        <div class="text-center text-muted py-5">
+            <i class="fas fa-shield-halved fa-2x mb-2"></i>
+            <p class="mb-0">Aucune entree d'audit</p>
+            <p class="small">Aucune action ne correspond a ces criteres pour le moment.</p>
+        </div>
     @else
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-bns-border text-sm">
-                <thead class="bg-bns-muted/70">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Date</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Utilisateur</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Action</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Cible</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">IP</th>
+                        <th>Date</th>
+                        <th>Utilisateur</th>
+                        <th>Action</th>
+                        <th>Cible</th>
+                        <th>IP</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-bns-border">
+                <tbody>
                     @foreach ($logs as $log)
-                        <tr class="transition-colors hover:bg-bns-muted/40">
-                            <td class="whitespace-nowrap px-4 py-3 text-bns-muted-foreground">
-                                <span class="inline-flex items-center gap-1.5">
-                                    <x-icon name="clock" class="h-3.5 w-3.5 text-bns-muted-foreground" />
-                                    {{ $log->created_at->format('d/m/Y H:i:s') }}
-                                </span>
+                        <tr>
+                            <td class="text-nowrap text-muted">
+                                <i class="fas fa-clock"></i>
+                                {{ $log->created_at->format('d/m/Y H:i:s') }}
                             </td>
-                            <td class="px-4 py-3 text-bns-foreground">{{ $log->user?->nomComplet() ?? '—' }}</td>
-                            <td class="px-4 py-3"><x-badge color="primary">{{ $log->action }}</x-badge></td>
-                            <td class="px-4 py-3 text-bns-muted-foreground">{{ $log->cible ?? '—' }}</td>
-                            <td class="px-4 py-3 text-bns-muted-foreground">{{ $log->ip ?? '—' }}</td>
+                            <td>{{ $log->user?->nomComplet() ?? '—' }}</td>
+                            <td><span class="badge badge-primary">{{ $log->action }}</span></td>
+                            <td class="text-muted">{{ $log->cible ?? '—' }}</td>
+                            <td class="text-muted">{{ $log->ip ?? '—' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     @endif
+    </div>
 </div>
 
-<div class="mt-4">{{ $logs->links() }}</div>
+<div class="mt-3">{{ $logs->links() }}</div>
 @endsection

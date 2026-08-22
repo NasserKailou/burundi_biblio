@@ -1,101 +1,169 @@
-@extends('layouts.admin')
+@extends('layouts.adminlte')
 
-@section('titre', 'Statistiques')
+@section('page-title', 'Statistiques')
+@section('page-description', "Usage du catalogue et de la plateforme.")
 
-@section('admin-contenu')
-<x-page-header title="Statistiques" description="Usage du catalogue et de la plateforme." icon="chart-bar">
-    <x-slot:actions>
-        <x-button variant="secondary" href="{{ route('admin.statistiques.export', ['format' => 'csv', 'niveau' => $niveauSelectionne]) }}">
-            <x-icon name="download" class="h-4 w-4" /> CSV
-        </x-button>
-        <x-button variant="secondary" href="{{ route('admin.statistiques.export', ['format' => 'pdf', 'niveau' => $niveauSelectionne]) }}">
-            <x-icon name="download" class="h-4 w-4" /> PDF
-        </x-button>
-    </x-slot:actions>
-</x-page-header>
+@section('page-actions')
+    <a href="{{ route('admin.statistiques.export', ['format' => 'csv', 'niveau' => $niveauSelectionne]) }}" class="btn btn-outline-secondary">
+        <i class="fas fa-download"></i> CSV
+    </a>
+    <a href="{{ route('admin.statistiques.export', ['format' => 'pdf', 'niveau' => $niveauSelectionne]) }}" class="btn btn-outline-secondary">
+        <i class="fas fa-download"></i> PDF
+    </a>
+@endsection
 
-<form method="GET" class="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-bns-border bg-bns-card p-3 shadow-sm">
-    <select name="niveau" class="rounded-md border border-bns-border bg-white px-3 py-2 text-sm shadow-sm">
+@section('adminlte-contenu')
+
+<form method="GET" class="form-inline card card-body bns-reveal mb-4">
+    <select name="niveau" class="form-control mr-2 mb-2">
         <option value="">Tous les niveaux</option>
         @foreach ($niveaux as $niveau)
             <option value="{{ $niveau->id }}" @selected($niveauSelectionne == $niveau->id)>{{ $niveau->libelle }}</option>
         @endforeach
     </select>
-    <select name="granularite" class="rounded-md border border-bns-border bg-white px-3 py-2 text-sm shadow-sm">
+    <select name="granularite" class="form-control mr-2 mb-2">
         <option value="jour" @selected($granularite === 'jour')>Par jour</option>
         <option value="semaine" @selected($granularite === 'semaine')>Par semaine</option>
         <option value="mois" @selected($granularite === 'mois')>Par mois</option>
     </select>
-    <button type="submit" class="inline-flex items-center gap-2 rounded-md border border-bns-border px-4 py-2 text-sm font-medium text-bns-foreground transition-colors hover:bg-bns-muted">
-        <x-icon name="filter" class="h-4 w-4" /> Filtrer
+    <button type="submit" class="btn btn-outline-secondary mb-2">
+        <i class="fas fa-filter"></i> Filtrer
     </button>
 </form>
 
-<div class="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-    <x-stat-card label="Manuels" :value="$overview['nb_manuels']" icon="book-open" accent="primary" />
-    <x-stat-card label="Consultations" :value="$overview['nb_consultations']" icon="chart-bar" accent="accent" />
-    <x-stat-card label="Heures de lecture" :value="$overview['duree_totale_heures']" icon="clock" accent="success" />
-    <x-stat-card label="Eleves actifs" :value="$overview['nb_eleves_actifs']" icon="users" accent="primary" />
+<div class="row bns-reveal-list">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <h3>{{ $overview['nb_manuels'] }}</h3>
+                <p>Manuels</p>
+            </div>
+            <div class="icon"><i class="fas fa-book-open"></i></div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box" style="background-color:#e08e00;color:#fff;">
+            <div class="inner">
+                <h3>{{ $overview['nb_consultations'] }}</h3>
+                <p>Consultations</p>
+            </div>
+            <div class="icon"><i class="fas fa-chart-column"></i></div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $overview['duree_totale_heures'] }}</h3>
+                <p>Heures de lecture</p>
+            </div>
+            <div class="icon"><i class="fas fa-clock"></i></div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <h3>{{ $overview['nb_eleves_actifs'] }}</h3>
+                <p>Eleves actifs</p>
+            </div>
+            <div class="icon"><i class="fas fa-users"></i></div>
+        </div>
+    </div>
 </div>
 
-<div class="mb-8 grid gap-6 lg:grid-cols-2">
-    <x-card>
-        <h2 class="mb-4 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Consultations dans le temps</h2>
-        <x-chart type="line" :labels="$consultationsParPeriode->pluck('periode')" :values="$consultationsParPeriode->pluck('total')" label="Consultations" />
-    </x-card>
-    <x-card>
-        <h2 class="mb-4 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Repartition par matiere</h2>
-        <x-chart type="doughnut" :labels="$repartitionMatiere->pluck('libelle')" :values="$repartitionMatiere->pluck('total')" label="Manuels par matiere" />
-    </x-card>
+<div class="row bns-reveal-list">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Consultations dans le temps</h3>
+            </div>
+            <div class="card-body">
+                <x-chart type="line" :labels="$consultationsParPeriode->pluck('periode')" :values="$consultationsParPeriode->pluck('total')" label="Consultations" />
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Repartition par matiere</h3>
+            </div>
+            <div class="card-body">
+                <x-chart type="doughnut" :labels="$repartitionMatiere->pluck('libelle')" :values="$repartitionMatiere->pluck('total')" label="Manuels par matiere" />
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="mb-8">
-    <x-card>
-        <h2 class="mb-4 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Repartition par niveau</h2>
-        <x-chart type="bar" :labels="$repartitionNiveau->pluck('libelle')" :values="$repartitionNiveau->pluck('total')" label="Manuels par niveau" />
-    </x-card>
+<div class="row bns-reveal-list">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Repartition par niveau</h3>
+            </div>
+            <div class="card-body">
+                <x-chart type="bar" :labels="$repartitionNiveau->pluck('libelle')" :values="$repartitionNiveau->pluck('total')" label="Manuels par niveau" />
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="grid gap-6 lg:grid-cols-3">
-    <x-card>
-        <h2 class="mb-3 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Manuels les plus consultes</h2>
-        <ol class="space-y-2 text-sm">
-            @forelse ($manuelsPlusConsultes as $ligne)
-                <li class="flex justify-between gap-2">
-                    <span class="truncate text-bns-foreground">{{ $ligne['titre'] }}</span>
-                    <span class="shrink-0 text-bns-muted-foreground">{{ $ligne['nb_consultations'] }}</span>
-                </li>
-            @empty
-                <li class="text-bns-muted-foreground">Aucune donnee.</li>
-            @endforelse
-        </ol>
-    </x-card>
-    <x-card>
-        <h2 class="mb-3 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Eleves les plus actifs</h2>
-        <ol class="space-y-2 text-sm">
-            @forelse ($elevesPlusActifs as $ligne)
-                <li class="flex justify-between gap-2">
-                    <span class="truncate text-bns-foreground">{{ $ligne['nom'] }} <span class="text-bns-muted-foreground">({{ $ligne['niveau'] }})</span></span>
-                    <span class="shrink-0 text-bns-muted-foreground">{{ $ligne['nb_consultations'] }}</span>
-                </li>
-            @empty
-                <li class="text-bns-muted-foreground">Aucune donnee.</li>
-            @endforelse
-        </ol>
-    </x-card>
-    <x-card>
-        <h2 class="mb-3 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">Enseignants les plus actifs</h2>
-        <ol class="space-y-2 text-sm">
-            @forelse ($enseignantsPlusActifs as $ligne)
-                <li class="flex justify-between gap-2">
-                    <span class="truncate text-bns-foreground">{{ $ligne['nom'] }}</span>
-                    <span class="shrink-0 text-bns-muted-foreground">{{ $ligne['nb_consultations_recues'] }}</span>
-                </li>
-            @empty
-                <li class="text-bns-muted-foreground">Aucune donnee.</li>
-            @endforelse
-        </ol>
-    </x-card>
+<div class="row bns-reveal-list">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Manuels les plus consultes</h3>
+            </div>
+            <div class="card-body">
+                <ol class="list-unstyled mb-0">
+                    @forelse ($manuelsPlusConsultes as $ligne)
+                        <li class="d-flex justify-content-between mb-2">
+                            <span class="text-truncate mr-2">{{ $ligne['titre'] }}</span>
+                            <span class="text-muted text-nowrap">{{ $ligne['nb_consultations'] }}</span>
+                        </li>
+                    @empty
+                        <li class="text-muted">Aucune donnee.</li>
+                    @endforelse
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Eleves les plus actifs</h3>
+            </div>
+            <div class="card-body">
+                <ol class="list-unstyled mb-0">
+                    @forelse ($elevesPlusActifs as $ligne)
+                        <li class="d-flex justify-content-between mb-2">
+                            <span class="text-truncate mr-2">{{ $ligne['nom'] }} <span class="text-muted">({{ $ligne['niveau'] }})</span></span>
+                            <span class="text-muted text-nowrap">{{ $ligne['nb_consultations'] }}</span>
+                        </li>
+                    @empty
+                        <li class="text-muted">Aucune donnee.</li>
+                    @endforelse
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Enseignants les plus actifs</h3>
+            </div>
+            <div class="card-body">
+                <ol class="list-unstyled mb-0">
+                    @forelse ($enseignantsPlusActifs as $ligne)
+                        <li class="d-flex justify-content-between mb-2">
+                            <span class="text-truncate mr-2">{{ $ligne['nom'] }}</span>
+                            <span class="text-muted text-nowrap">{{ $ligne['nb_consultations_recues'] }}</span>
+                        </li>
+                    @empty
+                        <li class="text-muted">Aucune donnee.</li>
+                    @endforelse
+                </ol>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 

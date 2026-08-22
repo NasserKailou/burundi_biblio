@@ -1,69 +1,76 @@
-@extends('layouts.admin')
+@extends('layouts.adminlte')
 
-@section('titre', 'Matieres')
+@section('page-title', 'Matieres')
+@section('page-description', 'Les matieres permettent de classer et filtrer les manuels du catalogue.')
 
-@section('admin-contenu')
-<x-page-header title="Matieres" description="Les matieres permettent de classer et filtrer les manuels du catalogue." icon="tag" />
+@section('adminlte-contenu')
 
-<x-card class="mb-6 max-w-xl !p-0">
-    <div class="border-b border-bns-border px-6 py-4">
-        <h2 class="flex items-center gap-2 font-heading text-sm font-semibold text-bns-foreground">
-            <x-icon name="plus" class="h-4 w-4 text-bns-primary" /> Ajouter une matiere
-        </h2>
+<div class="card bns-reveal mb-4" style="max-width:40rem;">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-plus text-primary"></i> Ajouter une matiere</h3>
     </div>
-    <div class="p-6">
+    <div class="card-body">
         @if ($errors->any())
-            <x-alert type="error" class="mb-4">
-                <ul class="list-inside list-disc">
+            <div class="alert alert-danger">
+                <ul class="mb-0 pl-3">
                     @foreach ($errors->all() as $erreur)<li>{{ $erreur }}</li>@endforeach
                 </ul>
-            </x-alert>
+            </div>
         @endif
-        <form method="POST" action="{{ route('admin.matieres.store') }}" class="flex items-end gap-3">
+        <form method="POST" action="{{ route('admin.matieres.store') }}" class="form-row align-items-end">
             @csrf
-            <div class="flex-1"><x-input name="libelle" label="Libelle" required value="{{ old('libelle') }}" /></div>
-            <x-button variant="primary">Ajouter</x-button>
+            <div class="form-group col">
+                <label for="libelle">Libelle</label>
+                <input type="text" id="libelle" name="libelle" required value="{{ old('libelle') }}" class="form-control @error('libelle') is-invalid @enderror">
+                @error('libelle')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
         </form>
     </div>
-</x-card>
+</div>
 
-<div class="overflow-hidden rounded-xl border border-bns-border bg-bns-card shadow-sm">
+<div class="card bns-reveal">
+    <div class="card-body p-0">
     @if ($matieres->isEmpty())
-        <x-empty-state icon="tag" title="Aucune matiere definie" description="Ajoutez une premiere matiere pour classer les manuels du catalogue." />
+        <div class="text-center text-muted py-5">
+            <i class="fas fa-tag fa-2x mb-2"></i>
+            <p class="mb-0">Aucune matiere definie</p>
+            <p class="small">Ajoutez une premiere matiere pour classer les manuels du catalogue.</p>
+        </div>
     @else
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-bns-border text-sm">
-                <thead class="bg-bns-muted/70">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Libelle</th>
-                        <th class="px-4 py-3 text-left font-semibold text-bns-muted-foreground">Manuels</th>
-                        <th class="px-4 py-3"></th>
+                        <th>Libelle</th>
+                        <th>Manuels</th>
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-bns-border">
+                <tbody>
                     @foreach ($matieres as $matiere)
-                        <tr class="transition-colors hover:bg-bns-muted/40">
-                            <td class="px-4 py-2.5">
-                                <input type="text" name="libelle" value="{{ $matiere->libelle }}" form="matiere-form-{{ $matiere->id }}" class="w-56 rounded-md border border-bns-border px-2.5 py-1.5 text-sm transition-colors focus:border-bns-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring">
+                        <tr>
+                            <td>
+                                <input type="text" name="libelle" value="{{ $matiere->libelle }}" form="matiere-form-{{ $matiere->id }}" class="form-control form-control-sm" style="width:14rem;">
                             </td>
-                            <td class="px-4 py-2.5"><x-badge color="primary">{{ $matiere->manuels_count }}</x-badge></td>
-                            <td class="whitespace-nowrap px-4 py-2.5 text-right">
-                                <form id="matiere-form-{{ $matiere->id }}" method="POST" action="{{ route('admin.matieres.update', $matiere) }}" class="inline">
+                            <td><span class="badge badge-primary">{{ $matiere->manuels_count }}</span></td>
+                            <td class="text-right text-nowrap">
+                                <form id="matiere-form-{{ $matiere->id }}" method="POST" action="{{ route('admin.matieres.update', $matiere) }}" class="d-inline">
                                     @csrf
                                     @method('PUT')
                                 </form>
-                                <div class="flex items-center justify-end gap-1">
-                                    <button type="submit" form="matiere-form-{{ $matiere->id }}" title="Enregistrer" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-primary transition-colors hover:bg-teal-600/10">
-                                        <x-icon name="check-circle" class="h-4 w-4" />
+                                <button type="submit" form="matiere-form-{{ $matiere->id }}" title="Enregistrer" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                                <form method="POST" action="{{ route('admin.matieres.destroy', $matiere) }}" data-confirm="Supprimer cette matiere ?" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" title="Supprimer" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
                                     </button>
-                                    <form method="POST" action="{{ route('admin.matieres.destroy', $matiere) }}" data-confirm="Supprimer cette matiere ?">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" title="Supprimer" class="flex h-8 w-8 items-center justify-center rounded-md text-bns-destructive transition-colors hover:bg-red-50">
-                                            <x-icon name="trash" class="h-4 w-4" />
-                                        </button>
-                                    </form>
-                                </div>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -71,5 +78,6 @@
             </table>
         </div>
     @endif
+    </div>
 </div>
 @endsection

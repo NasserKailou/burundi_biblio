@@ -14,19 +14,21 @@ if (grille && champRecherche && champMatiere) {
 
     function carteManuel(manuel) {
         const badgeCommun = manuel.est_commun
-            ? '<span class="mt-1 inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-[#78350f]">Commun</span>'
+            ? '<span class="badge badge-success mt-1">Commun</span>'
             : '';
 
         return `
-            <a href="${manuel.fiche_url}" class="group block">
-                <div class="aspect-[3/4] w-full overflow-hidden rounded-lg border border-bns-border bg-bns-muted shadow-sm">
+            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <a href="${manuel.fiche_url}" class="card h-100 text-decoration-none card-hover">
                     <img src="${manuel.couverture_url}" alt="Couverture du manuel ${echapperHtml(manuel.titre)}" loading="lazy"
-                        class="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105">
-                </div>
-                <p class="mt-2 line-clamp-2 font-heading text-sm font-medium text-bns-foreground">${echapperHtml(manuel.titre)}</p>
-                <p class="text-xs text-bns-muted-foreground">${echapperHtml(manuel.matiere)}</p>
-                ${badgeCommun}
-            </a>
+                        class="card-img-top" style="aspect-ratio:3/4;object-fit:cover;">
+                    <div class="card-body">
+                        <p class="mb-1 font-weight-bold text-dark text-truncate">${echapperHtml(manuel.titre)}</p>
+                        <p class="mb-0 text-muted small">${echapperHtml(manuel.matiere)}</p>
+                        ${badgeCommun}
+                    </div>
+                </a>
+            </div>
         `;
     }
 

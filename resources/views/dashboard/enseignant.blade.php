@@ -1,20 +1,45 @@
-@extends('layouts.app')
+@extends('layouts.adminlte')
 
-@section('titre', 'Espace enseignant')
+@section('page-title', "Bonjour {$user->prenom}")
+@section('page-description', "Vue d'ensemble de vos publications sur la plateforme.")
 
-@section('contenu')
-<x-page-header title="Bonjour {{ $user->prenom }}" description="Vue d'ensemble de vos publications sur la plateforme." icon="home" />
-
-<div class="grid gap-6 sm:grid-cols-3">
-    <x-stat-card label="Manuels" :value="$nbManuels" icon="book-open" accent="primary" />
-    <x-stat-card label="Publies" :value="$nbPublies" icon="check-circle" accent="success" />
-    <x-card>
-        <h2 class="mb-2 flex items-center gap-2 text-sm font-medium uppercase tracking-wide text-bns-muted-foreground">
-            <x-icon name="layers" class="h-4 w-4 text-bns-primary" /> Niveaux geres
-        </h2>
-        <p class="text-sm text-bns-foreground">
-            {{ $user->niveau?->libelle }}@if($user->niveauxEnseignes->isNotEmpty()), {{ $user->niveauxEnseignes->pluck('libelle')->join(', ') }}@endif
-        </p>
-    </x-card>
+@section('adminlte-contenu')
+<div class="row bns-reveal-list">
+    <div class="col-lg-4 col-6">
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <h3>{{ $nbManuels }}</h3>
+                <p>Manuels</p>
+            </div>
+            <div class="icon"><i class="fas fa-book-open"></i></div>
+            <a href="{{ route('teacher.manuels.index') }}" class="small-box-footer">
+                Voir mes manuels <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-4 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $nbPublies }}</h3>
+                <p>Publies</p>
+            </div>
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+            <a href="{{ route('teacher.manuels.index') }}" class="small-box-footer">
+                Voir mes manuels <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-4 col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-layer-group mr-1"></i> Niveaux geres</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">
+                    {{ $user->niveau?->libelle }}@if($user->niveauxEnseignes->isNotEmpty()), {{ $user->niveauxEnseignes->pluck('libelle')->join(', ') }}@endif
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

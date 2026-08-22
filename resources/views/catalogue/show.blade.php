@@ -1,51 +1,53 @@
-@extends('layouts.app')
+@extends('layouts.adminlte')
 
-@section('titre', $manuel->titre)
+@section('page-title', $manuel->titre)
 
-@section('contenu')
-<a href="{{ route('catalogue.index') }}" class="mb-6 inline-block text-sm text-bns-muted-foreground hover:text-bns-foreground">
-    &larr; Retour au catalogue
+@section('adminlte-contenu')
+<a href="{{ route('catalogue.index') }}" class="mb-3 d-inline-block text-muted small">
+    <i class="fas fa-arrow-left"></i> Retour au catalogue
 </a>
 
-<div class="grid gap-8 sm:grid-cols-[240px_1fr]">
-    <div>
-        <x-book-cover :manuel="$manuel" />
+<div class="row bns-reveal">
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <img src="{{ route('catalogue.couverture', $manuel) }}" class="card-img-top" alt="Couverture du manuel {{ $manuel->titre }}" loading="lazy">
+        </div>
     </div>
 
-    <div>
-        <h1 class="font-heading text-2xl font-semibold text-bns-foreground">{{ $manuel->titre }}</h1>
+    <div class="col-md-9">
+        <h1>{{ $manuel->titre }}</h1>
 
-        <div class="mt-2 flex flex-wrap gap-2">
-            <x-badge color="primary">{{ $manuel->matiere->libelle }}</x-badge>
-            <x-badge>{{ strtoupper($manuel->type) }}</x-badge>
+        <div class="mt-2 mb-3">
+            <span class="badge badge-primary mr-1">{{ $manuel->matiere->libelle }}</span>
+            <span class="badge badge-secondary mr-1">{{ strtoupper($manuel->type) }}</span>
             @foreach ($manuel->niveaux as $niveau)
-                <x-badge>{{ $niveau->libelle }}</x-badge>
+                <span class="badge badge-secondary mr-1">{{ $niveau->libelle }}</span>
             @endforeach
             @if ($manuel->est_commun)
-                <x-badge color="accent">Commun a tous les niveaux</x-badge>
+                <span class="badge badge-success mr-1">Commun a tous les niveaux</span>
             @endif
         </div>
 
-        <dl class="mt-4 space-y-1 text-sm text-bns-muted-foreground">
+        <dl class="text-muted small mb-0">
             @if ($manuel->auteur)
-                <div><dt class="inline font-medium text-bns-foreground">Auteur : </dt><dd class="inline">{{ $manuel->auteur }}</dd></div>
+                <div><dt class="d-inline font-weight-bold text-dark">Auteur : </dt><dd class="d-inline">{{ $manuel->auteur }}</dd></div>
             @endif
             @if ($manuel->annee)
-                <div><dt class="inline font-medium text-bns-foreground">Annee : </dt><dd class="inline">{{ $manuel->annee }}</dd></div>
+                <div><dt class="d-inline font-weight-bold text-dark">Annee : </dt><dd class="d-inline">{{ $manuel->annee }}</dd></div>
             @endif
         </dl>
 
         @if ($manuel->description)
-            <p class="mt-4 text-sm leading-relaxed text-bns-foreground">{{ $manuel->description }}</p>
+            <p class="mt-3">{{ $manuel->description }}</p>
         @endif
 
-        <div class="mt-6 flex items-center gap-3" id="actions-manuel" data-manuel-id="{{ $manuel->id }}" data-favori="{{ $estFavori ? '1' : '0' }}" data-favori-url="{{ route('api.favoris.store') }}" data-favori-destroy-url="{{ route('api.favoris.destroy', $manuel) }}">
-            <a href="{{ route('reader.show', $manuel) }}" class="inline-flex items-center justify-center gap-2 rounded-md bg-bns-primary px-4 py-2 text-sm font-medium text-bns-on-primary transition-colors duration-150 hover:bg-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring focus-visible:ring-offset-2">
-                Lire
+        <div class="mt-4" id="actions-manuel" data-manuel-id="{{ $manuel->id }}" data-favori="{{ $estFavori ? '1' : '0' }}" data-favori-url="{{ route('api.favoris.store') }}" data-favori-destroy-url="{{ route('api.favoris.destroy', $manuel) }}">
+            <a href="{{ route('reader.show', $manuel) }}" class="btn btn-primary">
+                <i class="fas fa-book-open"></i> Lire
             </a>
-            <x-button id="btn-favori-fiche" variant="secondary" type="button" aria-pressed="{{ $estFavori ? 'true' : 'false' }}">
+            <button id="btn-favori-fiche" type="button" class="btn btn-outline-secondary ml-2" aria-pressed="{{ $estFavori ? 'true' : 'false' }}">
                 {{ $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
-            </x-button>
+            </button>
         </div>
     </div>
 </div>

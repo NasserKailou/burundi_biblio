@@ -240,6 +240,15 @@ a:not(.btn):hover { color: var(--bns-blue-900); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- Graphiques (Chart.js, resources/js/stats.js) ---------- */
+/* Le canvas est "responsive" cote Chart.js mais sans maintainAspectRatio:false ni
+   hauteur de conteneur fixe, ce qui le fait grossir au-dela de sa carte (constate en
+   navigateur reel) - contrainte purement visuelle, ne touche pas resources/js/stats.js
+   ni le contrat data-chart-* qu'il lit. */
+.card-body canvas[data-chart] {
+    max-height: 320px;
+}
+
 /* ---------- Cartes de raccourci (dashboards) ---------- */
 
 .icon-circle {

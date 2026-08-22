@@ -221,7 +221,11 @@ return [
     */
 
     'sidebar_mini' => 'lg',
-    'sidebar_collapse' => true,
+    // false = la sidebar demarre etendue (texte + icones) et reste basculable via le
+    // bouton "Basculer la navigation" de la navbar (data-widget="pushmenu", deja fourni
+    // par AdminLTE) - satisfait "sidebar retractable" sans le mode "mini" collapse qui
+    // superpose le contenu au survol (source de confusion au premier chargement).
+    'sidebar_collapse' => false,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
@@ -464,11 +468,15 @@ return [
                 ['type' => 'css', 'asset' => true, 'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css'],
             ],
         ],
+        // Desactive : le projet a deja sa propre dependance npm chart.js@4 (bundlee via
+        // Vite dans resources/js/stats.js depuis la session 1). Charger EN PLUS la
+        // version v2.7 vendorisee par AdminLTE cree deux instances Chart.js distinctes
+        // sur la meme page (celle-ci en globale window.Chart, l'autre scoped au module
+        // ES de stats.js) - source de conflit reelle constatee en test navigateur
+        // (charts qui ne se dessinaient plus). Garder une seule source de verite.
         'Chartjs' => [
-            'active' => true,
-            'files' => [
-                ['type' => 'js', 'asset' => true, 'location' => 'vendor/chart.js/Chart.min.js'],
-            ],
+            'active' => false,
+            'files' => [],
         ],
         'Sweetalert2' => [
             'active' => true,

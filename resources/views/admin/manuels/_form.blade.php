@@ -3,101 +3,139 @@
 @endphp
 
 <div>
-    <x-form-section title="Informations generales" description="Le titre et la matiere permettent aux eleves de retrouver le manuel dans le catalogue.">
-        <div class="grid gap-4 sm:grid-cols-2">
-            <x-input name="titre" label="Titre" required value="{{ old('titre', $manuel->titre ?? '') }}" />
-            <x-select name="matiere_id" label="Matiere" required>
-                <option value="">-- Choisir --</option>
-                @foreach ($matieres as $matiere)
-                    <option value="{{ $matiere->id }}" @selected(old('matiere_id', $manuel->matiere_id ?? null) == $matiere->id)>{{ $matiere->libelle }}</option>
-                @endforeach
-            </x-select>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Informations generales</h3>
+            <p class="text-muted small mb-0">Le titre et la matiere permettent aux eleves de retrouver le manuel dans le catalogue.</p>
         </div>
-
-        <x-select name="uploader_id" label="Proprietaire (enseignant)" required>
-            <option value="">-- Choisir --</option>
-            @foreach ($enseignants as $enseignant)
-                <option value="{{ $enseignant->id }}" @selected(old('uploader_id', $manuel->uploader_id ?? null) == $enseignant->id)>{{ $enseignant->nomComplet() }}</option>
-            @endforeach
-        </x-select>
-
-        <div>
-            <label for="description" class="block text-sm font-medium text-bns-foreground">Description</label>
-            <textarea id="description" name="description" rows="3"
-                class="mt-1 block w-full rounded-md border border-bns-border px-3 py-2 text-sm shadow-sm transition-colors focus:border-bns-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bns-ring">{{ old('description', $manuel->description ?? '') }}</textarea>
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-2">
-            <x-input name="auteur" label="Auteur (optionnel)" value="{{ old('auteur', $manuel->auteur ?? '') }}" />
-            <x-input name="annee" type="number" label="Annee (optionnelle)" value="{{ old('annee', $manuel->annee ?? '') }}" />
-        </div>
-    </x-form-section>
-
-    <x-form-section title="Diffusion" description="Choisissez qui peut voir ce manuel dans son espace eleve.">
-        <fieldset>
-            <legend class="mb-2 block text-sm font-medium text-bns-foreground">Niveaux cibles</legend>
-            <div class="flex flex-wrap gap-2">
-                @foreach ($niveaux as $niveau)
-                    <label class="has-[:checked]:border-bns-primary has-[:checked]:bg-teal-600/10 has-[:checked]:text-bns-primary flex cursor-pointer items-center gap-2 rounded-full border border-bns-border px-3.5 py-1.5 text-sm text-bns-foreground transition-colors hover:bg-bns-muted">
-                        <input type="checkbox" name="niveaux[]" value="{{ $niveau->id }}" class="sr-only"
-                            @checked(in_array($niveau->id, $niveauxSelectionnes))>
-                        {{ $niveau->libelle }}
-                    </label>
-                @endforeach
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-sm-6">
+                    <label for="titre">Titre</label>
+                    <input type="text" id="titre" name="titre" required value="{{ old('titre', $manuel->titre ?? '') }}" class="form-control @error('titre') is-invalid @enderror">
+                    @error('titre')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="matiere_id">Matiere</label>
+                    <select id="matiere_id" name="matiere_id" required class="form-control @error('matiere_id') is-invalid @enderror">
+                        <option value="">-- Choisir --</option>
+                        @foreach ($matieres as $matiere)
+                            <option value="{{ $matiere->id }}" @selected(old('matiere_id', $manuel->matiere_id ?? null) == $matiere->id)>{{ $matiere->libelle }}</option>
+                        @endforeach
+                    </select>
+                    @error('matiere_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
             </div>
-        </fieldset>
 
-        <label class="flex items-center gap-2 text-sm text-bns-foreground">
-            <input type="checkbox" name="est_commun" value="1" class="rounded border-bns-border text-bns-primary focus:ring-bns-ring"
-                @checked(old('est_commun', $manuel->est_commun ?? false))>
-            Ressource commune (visible par tous les niveaux)
-        </label>
+            <div class="form-group">
+                <label for="uploader_id">Proprietaire (enseignant)</label>
+                <select id="uploader_id" name="uploader_id" required class="form-control @error('uploader_id') is-invalid @enderror">
+                    <option value="">-- Choisir --</option>
+                    @foreach ($enseignants as $enseignant)
+                        <option value="{{ $enseignant->id }}" @selected(old('uploader_id', $manuel->uploader_id ?? null) == $enseignant->id)>{{ $enseignant->nomComplet() }}</option>
+                    @endforeach
+                </select>
+                @error('uploader_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
 
-        <fieldset>
-            <legend class="mb-2 block text-sm font-medium text-bns-foreground">Statut</legend>
-            <div class="flex gap-4 text-sm">
-                <label class="flex items-center gap-2">
-                    <input type="radio" name="statut" value="brouillon" class="border-bns-border text-bns-primary focus:ring-bns-ring"
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3" class="form-control @error('description') is-invalid @enderror">{{ old('description', $manuel->description ?? '') }}</textarea>
+                @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-sm-6">
+                    <label for="auteur">Auteur (optionnel)</label>
+                    <input type="text" id="auteur" name="auteur" value="{{ old('auteur', $manuel->auteur ?? '') }}" class="form-control @error('auteur') is-invalid @enderror">
+                    @error('auteur')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="annee">Annee (optionnelle)</label>
+                    <input type="number" id="annee" name="annee" value="{{ old('annee', $manuel->annee ?? '') }}" class="form-control @error('annee') is-invalid @enderror">
+                    @error('annee')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Diffusion</h3>
+            <p class="text-muted small mb-0">Choisissez qui peut voir ce manuel dans son espace eleve.</p>
+        </div>
+        <div class="card-body">
+            <fieldset class="form-group">
+                <legend class="col-form-label">Niveaux cibles</legend>
+                <div>
+                    @foreach ($niveaux as $niveau)
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input type="checkbox" class="custom-control-input" id="niveau_cible_{{ $niveau->id }}" name="niveaux[]" value="{{ $niveau->id }}"
+                                @checked(in_array($niveau->id, $niveauxSelectionnes))>
+                            <label class="custom-control-label" for="niveau_cible_{{ $niveau->id }}">{{ $niveau->libelle }}</label>
+                        </div>
+                    @endforeach
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="est_commun" name="est_commun" value="1"
+                        @checked(old('est_commun', $manuel->est_commun ?? false))>
+                    <label class="custom-control-label" for="est_commun">Ressource commune (visible par tous les niveaux)</label>
+                </div>
+            </div>
+
+            <fieldset class="form-group mb-0">
+                <legend class="col-form-label">Statut</legend>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="statut_brouillon" class="custom-control-input" name="statut" value="brouillon"
                         @checked(old('statut', $manuel->statut ?? 'brouillon') === 'brouillon')>
-                    Brouillon
-                </label>
-                <label class="flex items-center gap-2">
-                    <input type="radio" name="statut" value="publie" class="border-bns-border text-bns-primary focus:ring-bns-ring"
+                    <label class="custom-control-label" for="statut_brouillon">Brouillon</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="statut_publie" class="custom-control-input" name="statut" value="publie"
                         @checked(old('statut', $manuel->statut ?? '') === 'publie')>
-                    Publie
-                </label>
-            </div>
-        </fieldset>
-    </x-form-section>
+                    <label class="custom-control-label" for="statut_publie">Publie</label>
+                </div>
+            </fieldset>
+        </div>
+    </div>
 
-    <x-form-section title="Fichiers" description="Formats acceptes : PDF ou EPUB pour le contenu, image pour la couverture." last>
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label for="fichier" class="block text-sm font-medium text-bns-foreground">Fichier (PDF/EPUB) @if(!isset($manuel))<span class="text-bns-destructive">*</span>@endif</label>
-                <div class="mt-1 flex items-center gap-2 rounded-md border border-dashed border-bns-border bg-bns-muted/50 px-3 py-3">
-                    <x-icon name="download" class="h-4 w-4 shrink-0 text-bns-muted-foreground" />
-                    <input type="file" id="fichier" name="fichier" accept=".pdf,.epub" class="block w-full text-sm text-bns-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-bns-foreground file:shadow-sm">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Fichiers</h3>
+            <p class="text-muted small mb-0">Formats acceptes : PDF ou EPUB pour le contenu, image pour la couverture.</p>
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-sm-6">
+                    <label for="fichier">Fichier (PDF/EPUB) @if(!isset($manuel))<span class="text-danger">*</span>@endif</label>
+                    <div class="custom-file">
+                        <input type="file" id="fichier" name="fichier" accept=".pdf,.epub" class="custom-file-input @error('fichier') is-invalid @enderror">
+                        <label class="custom-file-label" for="fichier">Choisir un fichier...</label>
+                        @error('fichier')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    @if (isset($manuel))<small class="form-text text-muted">Laisser vide pour conserver le fichier actuel.</small>@endif
                 </div>
-                @if (isset($manuel))<p class="mt-1 text-xs text-bns-muted-foreground">Laisser vide pour conserver le fichier actuel.</p>@endif
-                @error('fichier')<p class="mt-1 text-sm text-bns-destructive">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="couverture" class="block text-sm font-medium text-bns-foreground">Couverture @if(!isset($manuel))<span class="text-bns-destructive">*</span>@endif</label>
-                <div class="mt-1 flex items-center gap-2 rounded-md border border-dashed border-bns-border bg-bns-muted/50 px-3 py-3">
-                    <x-icon name="download" class="h-4 w-4 shrink-0 text-bns-muted-foreground" />
-                    <input type="file" id="couverture" name="couverture" accept="image/*" class="block w-full text-sm text-bns-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-bns-foreground file:shadow-sm">
+                <div class="form-group col-sm-6">
+                    <label for="couverture">Couverture @if(!isset($manuel))<span class="text-danger">*</span>@endif</label>
+                    <div class="custom-file">
+                        <input type="file" id="couverture" name="couverture" accept="image/*" class="custom-file-input @error('couverture') is-invalid @enderror">
+                        <label class="custom-file-label" for="couverture">Choisir un fichier...</label>
+                        @error('couverture')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    @if (isset($manuel))<small class="form-text text-muted">Laisser vide pour conserver la couverture actuelle.</small>@endif
                 </div>
-                @if (isset($manuel))<p class="mt-1 text-xs text-bns-muted-foreground">Laisser vide pour conserver la couverture actuelle.</p>@endif
-                @error('couverture')<p class="mt-1 text-sm text-bns-destructive">{{ $message }}</p>@enderror
             </div>
         </div>
-    </x-form-section>
+    </div>
 
-    <div class="flex items-center justify-end gap-3 pt-2">
-        <a href="{{ route('admin.manuels.index') }}" class="text-sm font-medium text-bns-muted-foreground hover:text-bns-foreground">Annuler</a>
-        <x-button variant="primary">
-            <x-icon name="check-circle" class="h-4 w-4" />
+    <div class="d-flex align-items-center justify-content-end mt-3">
+        <a href="{{ route('admin.manuels.index') }}" class="btn btn-link text-muted mr-2">Annuler</a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check-circle"></i>
             {{ isset($manuel) ? 'Enregistrer les modifications' : 'Ajouter le manuel' }}
-        </x-button>
+        </button>
     </div>
 </div>
