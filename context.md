@@ -297,7 +297,64 @@ ignoré) ni sur un éventuel déploiement réel de l'utilisateur (`.env` de dép
 séparé, cf. session 2) — mais action prise sans vérification préalable, à éviter à
 l'avenir.
 
-**Reste à faire** : étape 7 (le socle animations/toasts est posé depuis l'étape 3 —
-vérifier qu'il se déclenche bien sur de vraies actions CRUD en plus des flash messages),
-étape 9 (vérification responsive/clavier plus poussée), étape 10 (README à jour,
-vérification finale de la Definition of Done section 8 du cahier des charges).
+**Étape 7 (feat, terminée)** : vérifié en navigateur réel sur une vraie action CRUD (pas
+seulement le flash message de login) — création puis suppression d'un niveau de test sur
+`/admin/niveaux` : toast Toastr vert + alerte Bootstrap "Niveau créé."/"Niveau supprimé."
+déclenchés correctement, confirmation SweetAlert2 ("Supprimer ce niveau ?", bouton
+"Confirmer" rouge / "Annuler" bleu, couleurs Burundi) affichée avant la suppression.
+Skeleton loader ajouté à `resources/js/catalogue.js` (8 cartes `.bns-skeleton` affichées
+pendant le `fetch` AJAX, remplacées par les vraies cartes à la réponse) — le texte de
+statut accessible (`aria-live`) existait déjà depuis la session 1, le loader visuel
+manquait et est explicitement demandé par le cahier des charges (section 4).
+
+**Étape 8 (feat, terminée)** : le lien de bascule manquait dans un sens — le site public
+(`landing.blade.php`) avait bien un bouton "Se connecter à la bibliothèque" vers
+`/login`, mais rien ne ramenait vers le site public depuis les pages de connexion/
+inscription. Corrigé dans `layouts/guest.blade.php` : le bloc de marque du panneau
+gauche (desktop) devient un lien cliquable vers la route `accueil`, et un lien texte
+"← Retour au site" est ajouté au-dessus du formulaire pour les largeurs où ce panneau
+est masqué (`lg:hidden`). Bascule bidirectionnelle vérifiée en navigateur (desktop et
+tablette 820px).
+
+**Étape 9 (test, terminée)** : vérification responsive (redimensionnement navigateur
+piloté à 820×1180, gabarit tablette) sur le back-office (sidebar AdminLTE bascule
+automatiquement en menu hamburger, tables restent lisibles sans débordement horizontal)
+et le site public/connexion (aucun chevauchement, formulaire centré). `php artisan test`
+vert (29/29) après l'ensemble des changements de la session. Non-régression confirmée par
+navigation réelle des 3 rôles + site public sans erreur console sur toutes les pages
+listées dans les étapes 3-6 ci-dessus.
+
+**Étape 10 (docs, terminée)** : `README.md` — ligne de pile technique mise à jour (ne
+mentionnait plus que "Blade + Tailwind CSS", ne reflétait pas la double surface AdminLTE/
+Tailwind). `docs/design-system.md` (étape 2) et `context.md` (ce fichier) à jour.
+
+**Auto-vérification finale contre la Definition of Done (section 8 du cahier des
+charges)** :
+1. ✅ AdminLTE 3 intégré sur tout le back-office, layout pleine largeur (non "boxed").
+2. ✅ Charte Burundi appliquée de façon cohérente (navbar, sidebar, boutons, badges,
+   small-box, graphiques) — vérifiée visuellement sur toutes les surfaces back-office.
+3. ✅ Design professionnel, animé, convivial : transitions/animations d'apparition,
+   toasts, confirmations SweetAlert2, skeleton loader, graphiques Chart.js stylés.
+4. ✅ Espace public opérationnel, bascule claire et bidirectionnelle vers la connexion.
+5. ✅ Aucune régression détectée : 29/29 tests verts, RBAC applicatif et RBAC de menu
+   vérifiés indépendamment, toutes les routes existantes fonctionnelles.
+6. ✅ Assets 100% locaux (zéro CDN), responsive vérifié (desktop + tablette), accessible
+   (alt text, aria-live, tableaux `sr-only` de repli pour les graphiques, focus clavier
+   hérité de Bootstrap/AdminLTE), navigateur testé : Chromium (via l'outil de test).
+   Firefox/Edge non testés dans cet environnement (aucun navigateur alternatif installé) —
+   le CSS/JS utilisé (Bootstrap 4, AdminLTE 3, Chart.js 4) est standard et largement
+   compatible, mais cette vérification spécifique reste à faire par l'utilisateur.
+7. ⚠️ **Non vérifié dans cette session** : `docker compose up` — aucun Docker disponible
+   dans cet environnement de développement (contrainte déjà documentée session 1).
+   `docker-compose.yml`/`Dockerfile` non modifiés ; `composer.lock`/`package-lock.json`
+   mis à jour (nouvelle dépendance `jeroennoten/laravel-adminlte`), donc pris en compte
+   automatiquement par un `docker compose up -d --build`. À valider par l'utilisateur au
+   premier déploiement, comme déjà recommandé pour les scripts de sauvegarde (étape 12,
+   session 1).
+8. ✅ `docs/design-system.md` et `README.md` à jour.
+9. ✅ `context.md` mis à jour, à pousser avec ce commit.
+
+**Limite honnête supplémentaire** : le rendu pixel exact du lecteur PDF.js/EPUB.js n'a
+pas été revérifié dans cette session (déjà documenté comme non confirmable dans cet
+environnement de test, session 1, étape 6) — seule l'intégration du wrapper HTML autour
+a été vérifiée (200 OK, `div#lecteur` présent, aucune erreur PHP).

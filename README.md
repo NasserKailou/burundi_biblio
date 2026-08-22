@@ -9,9 +9,14 @@ dépendance Internet** sur le réseau local d'un établissement.
 
 ## Pile technique
 
-Laravel 11 (PHP 8.2) · Blade + Tailwind CSS + Fetch API (AJAX) ·
+Laravel 11 (PHP 8.2) · Back-office AdminLTE 3 / Bootstrap 4, site public et
+authentification en Blade + Tailwind CSS (deux surfaces distinctes, voir
+[docs/design-system.md](docs/design-system.md)) · Fetch API (AJAX) ·
 MySQL/MariaDB · PDF.js + EPUB.js (vendorisés) · Chart.js · Docker +
-docker-compose (app, nginx, db, redis, scheduler).
+docker-compose (app, nginx, db, redis, scheduler). Charte graphique aux
+couleurs du Burundi (bleu ciel / vert / rouge / blanc), tous les assets
+front (AdminLTE, Bootstrap, Chart.js, polices) servis en local — zéro
+dépendance Internet.
 
 ## Démarrage rapide
 

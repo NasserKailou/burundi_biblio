@@ -32,6 +32,20 @@ if (grille && champRecherche && champMatiere) {
         `;
     }
 
+    function carteSquelette() {
+        return `
+            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="bns-skeleton" style="aspect-ratio:3/4;"></div>
+                    <div class="card-body">
+                        <div class="bns-skeleton mb-2" style="height:0.9rem;width:80%;"></div>
+                        <div class="bns-skeleton" style="height:0.75rem;width:50%;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     async function chargerCatalogue() {
         const params = new URLSearchParams();
         if (champRecherche.value.trim()) {
@@ -47,6 +61,7 @@ if (grille && champRecherche && champMatiere) {
         requeteEnCours = new AbortController();
 
         statut.textContent = 'Chargement du catalogue...';
+        grille.innerHTML = carteSquelette().repeat(8);
 
         try {
             const reponse = await fetch(`/api/manuels?${params.toString()}`, {
