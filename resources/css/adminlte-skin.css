@@ -1,0 +1,268 @@
+/*
+ * Surcharge de skin AdminLTE 3 / Bootstrap 4 -> charte "Burundi" (bleu ciel / vert /
+ * rouge / blanc). AdminLTE compile Bootstrap en CSS statique (pas de variables
+ * exploitees par les classes), donc chaque classe utilisant le bleu/vert Bootstrap par
+ * defaut est redefinie explicitement ici. Voir docs/design-system.md pour les ratios de
+ * contraste WCAG verifies derriere chaque teinte.
+ * Charge APRES public/vendor/adminlte/dist/css/adminlte.min.css (voir
+ * layouts/adminlte.blade.php, @push('css')).
+ */
+
+@import '@fontsource/lexend/500.css';
+@import '@fontsource/lexend/600.css';
+@import '@fontsource/lexend/700.css';
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/500.css';
+@import '@fontsource/source-sans-3/600.css';
+
+:root {
+    --bns-blue-500: #1ca9e6;
+    --bns-blue-600: #1692c8;
+    --bns-blue-700: #0e7baa;
+    --bns-blue-800: #158abc;
+    --bns-blue-900: #073c56;
+    --bns-green-500: #1eb53a;
+    --bns-green-600: #19942f;
+    --bns-green-700: #178a2d;
+    --bns-red-500: #ce1126;
+    --bns-red-600: #ab0e1f;
+    --bns-red-700: #9f0d1d;
+    --bns-surface: #f4f7fa;
+    --bns-text: #2b2b2b;
+}
+
+body,
+.content-wrapper {
+    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--bns-text);
+    background-color: var(--bns-surface);
+}
+
+h1, h2, h3, h4, h5, h6,
+.brand-text,
+.card-title,
+.small-box h3 {
+    font-family: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ---------- Primary (bleu action, AA) ---------- */
+
+.bg-primary,
+.badge-primary,
+.label-primary,
+.alert-primary {
+    background-color: var(--bns-blue-700) !important;
+    color: #fff !important;
+}
+
+.text-primary { color: var(--bns-blue-700) !important; }
+.border-primary { border-color: var(--bns-blue-700) !important; }
+
+.btn-primary {
+    color: #fff;
+    background-color: var(--bns-blue-700);
+    border-color: var(--bns-blue-700);
+}
+.btn-primary:hover { background-color: var(--bns-blue-600); border-color: var(--bns-blue-600); }
+.btn-primary:focus, .btn-primary.focus {
+    background-color: var(--bns-blue-600);
+    border-color: var(--bns-blue-600);
+    box-shadow: 0 0 0 0.2rem rgba(28, 169, 230, 0.5);
+}
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+    background-color: var(--bns-blue-900);
+    border-color: var(--bns-blue-900);
+}
+
+.btn-outline-primary {
+    color: var(--bns-blue-700);
+    border-color: var(--bns-blue-700);
+}
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: var(--bns-blue-700);
+    border-color: var(--bns-blue-700);
+}
+
+.navbar-primary { background-color: var(--bns-blue-700) !important; }
+
+.card-primary:not(.card-outline) > .card-header {
+    background-color: var(--bns-blue-700);
+    color: #fff;
+}
+.card-outline.card-primary { border-top: 3px solid var(--bns-blue-700); }
+.card-outline.card-primary > .card-header { background-color: #fff; }
+
+.bg-gradient-primary {
+    background: linear-gradient(180deg, var(--bns-blue-600) 0%, var(--bns-blue-900) 100%) !important;
+}
+
+.list-group-item-primary {
+    color: var(--bns-blue-900);
+    background-color: #d7eef9;
+}
+
+/* Sidebar (fond fonce natif conserve, seul l'etat actif passe au bleu Burundi) */
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--bns-blue-700);
+    color: #fff;
+}
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active .nav-icon,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active .nav-icon {
+    color: #fff;
+}
+.main-sidebar .brand-link { border-bottom-color: rgba(255, 255, 255, 0.15); }
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    border-color: var(--bns-blue-700);
+    background-color: var(--bns-blue-700);
+}
+.form-control:focus {
+    border-color: var(--bns-blue-500);
+    box-shadow: 0 0 0 0.2rem rgba(28, 169, 230, 0.25);
+}
+.page-item.active .page-link {
+    background-color: var(--bns-blue-700);
+    border-color: var(--bns-blue-700);
+}
+a:not(.btn) { color: var(--bns-blue-700); }
+a:not(.btn):hover { color: var(--bns-blue-900); }
+
+/* ---------- Success (vert Burundi, AA) ---------- */
+
+.bg-success,
+.badge-success,
+.alert-success {
+    background-color: var(--bns-green-700) !important;
+    color: #fff !important;
+}
+.text-success { color: var(--bns-green-700) !important; }
+.border-success { border-color: var(--bns-green-700) !important; }
+
+.btn-success {
+    color: #fff;
+    background-color: var(--bns-green-700);
+    border-color: var(--bns-green-700);
+}
+.btn-success:hover { background-color: var(--bns-green-600); border-color: var(--bns-green-600); }
+.btn-success:focus, .btn-success.focus {
+    box-shadow: 0 0 0 0.2rem rgba(30, 181, 58, 0.5);
+}
+
+.card-success:not(.card-outline) > .card-header { background-color: var(--bns-green-700); color: #fff; }
+.card-outline.card-success { border-top: 3px solid var(--bns-green-700); }
+
+/* ---------- Danger (rouge Burundi) ---------- */
+
+.bg-danger,
+.badge-danger,
+.alert-danger {
+    background-color: var(--bns-red-500) !important;
+    color: #fff !important;
+}
+.text-danger { color: var(--bns-red-500) !important; }
+.border-danger { border-color: var(--bns-red-500) !important; }
+
+.btn-danger {
+    color: #fff;
+    background-color: var(--bns-red-500);
+    border-color: var(--bns-red-500);
+}
+.btn-danger:hover { background-color: var(--bns-red-600); border-color: var(--bns-red-600); }
+.btn-danger:focus, .btn-danger.focus {
+    box-shadow: 0 0 0 0.2rem rgba(206, 17, 38, 0.5);
+}
+
+.card-danger:not(.card-outline) > .card-header { background-color: var(--bns-red-500); color: #fff; }
+.card-outline.card-danger { border-top: 3px solid var(--bns-red-500); }
+
+/* ---------- Bandeau tricolore (signature visuelle discrete) ---------- */
+
+.bns-flag-strip {
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--bns-green-500) 0%, var(--bns-green-500) 33%,
+        #fff 33%, #fff 67%,
+        var(--bns-red-500) 67%, var(--bns-red-500) 100%
+    );
+}
+
+.main-header.navbar {
+    position: relative;
+}
+.main-header.navbar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--bns-green-500) 0%, var(--bns-green-500) 33%,
+        #fff 33%, #fff 67%,
+        var(--bns-red-500) 67%, var(--bns-red-500) 100%
+    );
+    z-index: 1030;
+}
+
+/* ---------- Animations d'apparition (respecte prefers-reduced-motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    .bns-reveal {
+        animation: bns-reveal 0.4s ease-out both;
+    }
+    .bns-reveal-list > * {
+        animation: bns-reveal 0.35s ease-out both;
+    }
+    .bns-reveal-list > *:nth-child(1) { animation-delay: 0.02s; }
+    .bns-reveal-list > *:nth-child(2) { animation-delay: 0.06s; }
+    .bns-reveal-list > *:nth-child(3) { animation-delay: 0.10s; }
+    .bns-reveal-list > *:nth-child(4) { animation-delay: 0.14s; }
+    .bns-reveal-list > *:nth-child(5) { animation-delay: 0.18s; }
+    .bns-reveal-list > *:nth-child(n+6) { animation-delay: 0.22s; }
+
+    .card {
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .card.card-hover:hover {
+        box-shadow: 0 0.5rem 1rem rgba(7, 60, 86, 0.15);
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes bns-reveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Cartes de raccourci (dashboards) ---------- */
+
+.icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ---------- Skeleton loader (chargements AJAX) ---------- */
+
+.bns-skeleton {
+    background: linear-gradient(90deg, #e9edf1 25%, #f4f7fa 37%, #e9edf1 63%);
+    background-size: 400% 100%;
+    border-radius: 0.25rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .bns-skeleton { animation: bns-skeleton-loading 1.4s ease infinite; }
+}
+@keyframes bns-skeleton-loading {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+}

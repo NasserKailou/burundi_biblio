@@ -47,7 +47,7 @@
     <x-input name="password" type="password" label="Mot de passe" required />
     <x-input name="password_confirmation" type="password" label="Confirmer le mot de passe" required />
 
-    <x-button variant="primary" class="w-full !py-2.5 shadow-sm shadow-teal-900/10 transition-transform hover:-translate-y-0.5">
+    <x-button variant="primary" class="w-full !py-2.5 shadow-sm shadow-sky-900/10 transition-transform hover:-translate-y-0.5">
         Créer mon compte
     </x-button>
 </form>

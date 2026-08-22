@@ -33,7 +33,7 @@
         Se souvenir de moi
     </label>
 
-    <x-button variant="primary" class="w-full !py-2.5 shadow-sm shadow-teal-900/10 transition-transform hover:-translate-y-0.5">
+    <x-button variant="primary" class="w-full !py-2.5 shadow-sm shadow-sky-900/10 transition-transform hover:-translate-y-0.5">
         Se connecter
     </x-button>
 </form>

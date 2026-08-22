@@ -18,6 +18,8 @@ export default {
             colors: {
                 bns: {
                     primary: 'var(--color-primary)',
+                    'primary-bright': 'var(--color-primary-bright)',
+                    'primary-deep': 'var(--color-primary-deep)',
                     'on-primary': 'var(--color-on-primary)',
                     accent: 'var(--color-accent)',
                     'on-accent': 'var(--color-on-accent)',

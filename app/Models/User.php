@@ -125,4 +125,27 @@ class User extends Authenticatable
     {
         return trim("{$this->prenom} {$this->nom}");
     }
+
+    /**
+     * Accesseur "name" attendu par le package jeroennoten/laravel-adminlte (menu
+     * utilisateur de la navbar) - le schema applicatif utilise nom/prenom, pas de
+     * colonne "name" (voir nomComplet()).
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->nomComplet();
+    }
+
+    /**
+     * Libelle de role affiche dans le menu utilisateur AdminLTE (convention de nommage
+     * du package : adminlte_desc(), voir usermenu_desc dans config/adminlte.php).
+     */
+    public function adminlte_desc(): string
+    {
+        return match (true) {
+            $this->isAdmin() => 'Administrateur',
+            $this->isEnseignant() => 'Enseignant',
+            default => 'Eleve',
+        };
+    }
 }

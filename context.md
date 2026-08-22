@@ -1,7 +1,7 @@
 # Contexte projet — Bibliothèque Numérique Scolaire (BNS)
 
 > Mémoire persistante du projet. À maintenir à jour à chaque étape (section 13 du plan).
-> Dernière mise à jour : 2026-08-20 (session 2) — Correctif erreur 500 au login + refonte design pages de connexion/inscription. Voir section "Session 2" en fin de fichier.
+> Dernière mise à jour : 2026-08-22 (session 4, en cours) — Refonte professionnelle AdminLTE 3 + charte Burundi. Voir section "Session 4" en fin de fichier.
 
 ## 1. Résumé produit
 
@@ -116,6 +116,107 @@ Mot de passe commun par rôle (démo uniquement — à changer en production) :
 **Design pages de connexion/inscription** (demande explicite : "plus attractif, plus animatif, plus professionnel") : nouveau `layouts/guest.blade.php` — mise en page deux colonnes sur grand écran (panneau de marque avec dégradé animé + formes décoratives "blob" en CSS, formulaire dans la colonne droite), animation d'entrée en fondu (`bns-fade-in-up`), micro-interaction sur le bouton principal (léger soulèvement au survol). Toutes les animations respectent `prefers-reduced-motion` (déjà une exigence du design system, section 8). `login.blade.php` et `register.blade.php` réécrits pour utiliser ce nouveau layout, cohérence visuelle conservée avec le reste du design system (palette teal/ambre, Lexend/Source Sans 3). Vérifié : `npm run build` sans erreur, page `/login` retourne 200 avec le nouveau balisage présent.
 
 **Nouvelle règle de workflow** (mémorisée) : mettre à jour ce fichier et pousser sur `origin` (https://github.com/NasserKailou/burundi_biblio.git, branche `master`) à la fin de chaque session sur ce projet, pas seulement sur demande explicite.
+
+## Session 4 — 2026-08-22 : refonte professionnelle AdminLTE 3 + charte Burundi (en cours)
+
+**Demande explicite de l'utilisateur** : remplacer le design Tailwind maison (sessions 1-3)
+par **AdminLTE 3** sur tout le back-office, appliquer une charte graphique **Burundi**
+(bleu ciel / blanc / vert / rouge) au lieu du teal/ambre, ajouter animations/toasts/
+loaders, et livrer un espace grand public. Décision explicitement confirmée avec
+l'utilisateur avant de commencer : AdminLTE (Bootstrap 4) et Tailwind ne cohabitent pas
+sur une même page (resets globaux en conflit) — voir section 1 de `docs/design-system.md`
+pour la répartition retenue (back-office = AdminLTE, site public/connexion = Tailwind,
+inchangés dans leur framework, recolorés Burundi).
+
+**Étape 1 (chore, terminée)** : audit — inventaire des layouts (`layouts/admin.blade.php`
+= sidebar Tailwind utilisée uniquement par les vues `admin/*` ; `layouts/app.blade.php`
+= navbar Tailwind utilisée par `teacher/*`, `dashboard/eleve`, `dashboard/enseignant`,
+`catalogue/*`, `reader/show` ; `layouts/guest.blade.php` = login/register, autonome).
+34 vues Blade recensées. Choix d'intégration : package `jeroennoten/laravel-adminlte`
+(v3.16, AdminLTE 3.2.0 vendorisé) plutôt que des assets copiés à la main — publie tout en
+local (`public/vendor/adminlte/...`, `public/vendor/{datatables,select2,sweetalert2,
+toastr,chart.js,fontawesome-free,jquery,bootstrap,overlayScrollbars,...}`), zéro CDN,
+cohérent avec la contrainte "aucune dépendance Internet" déjà appliquée aux polices/
+PDF.js/EPUB.js (étape 10, session 1).
+
+**Étape 2 (design, terminée)** : `docs/design-system.md` réécrit (v2). Palette Burundi
+vérifiée par calcul de contraste WCAG (luminance relative), pas reprise telle quelle : le
+bleu ciel vif imposé `#1CA9E6` échoue au AA avec du texte blanc (~2.7:1, sous le seuil
+même pour du grand texte) — même piège que l'ambre en session 1. Palette à deux niveaux
+retenue : `#1CA9E6` (accent vif, décoratif) + `#0E7BAA` (bleu "action", 4.7:1 avec blanc,
+utilisé pour tout texte/bouton porteur de sens) + `#073C56` (bleu profond, surfaces
+sombres) ; vert `#1EB53A` (accent) + `#178A2D` (action, 4.5:1 avec blanc) ; rouge
+`#CE1126` conforme tel quel (5.6:1 avec blanc, pas de variante nécessaire). Appliqué en
+CSS `:root` (`resources/css/app.css`, surface Tailwind) et en surcharge de classes
+Bootstrap (`resources/css/adminlte-skin.css`, surface AdminLTE). Skill `ui-ux-pro-max`
+invoqué (`--domain color --domain accessibility`) mais n'a renvoyé que la documentation
+générique du skill (pas d'analyse ciblée exploitable) — la vérification de contraste a
+donc été faite directement par calcul plutôt que reprise du skill, cohérent avec le
+protocole de repli déjà documenté en session 1 (rejeter un résultat non pertinent et le
+documenter plutôt que l'appliquer aveuglément).
+
+**Étape 3 (feat, en cours)** : intégration AdminLTE.
+- `composer require jeroennoten/laravel-adminlte`, `php artisan adminlte:install` +
+  `adminlte:plugins install --plugin=datatables,select2,sweetalert2,toastr,chartJs`
+  (Pace/progress-bar volontairement désactivé — plugin cosmétique non essentiel).
+- `config/adminlte.php` : titre, logo (placeholder SVG `public/images/logo-etablissement.svg`
+  — **à remplacer par le vrai logo de l'établissement**, emplacement réservé comme demandé),
+  `google_fonts.allowed = false` (évite un CDN Google Fonts par défaut), `sidebar_collapse
+  = true`, `use_route_url = true`. **Menu unique** (pas 3 sidebars séparées) filtré par
+  rôle via des *Gates* Laravel (`'can' => 'is-admin'|'is-enseignant'|'is-eleve'`, définies
+  dans `AppServiceProvider::boot()`) — reste compatible `config:cache` car le filtrage se
+  fait au rendu. Items admin : Tableau de bord, Statistiques, Utilisateurs, Catalogue,
+  Niveaux, Matières, Configuration, Journaux d'audit. **"Sauvegardes" volontairement
+  omis** : aucune interface web n'existe pour déclencher `mysqldump` depuis le navigateur
+  (`scripts/sauvegarde.sh` reste un outil serveur, section 12) — ajouter un lien mort ou
+  bâtir une UI de déclenchement de sauvegarde dépasserait le périmètre "refonte visuelle"
+  annoncé, décision documentée ici plutôt que pyivré silencieusement. Items enseignant :
+  Tableau de bord, Mes ressources, Téléverser un manuel, Statistiques. Items élève :
+  Accueil, Catalogue (« Reprendre la lecture »/« Mes favoris »/« Mon profil » restent des
+  sections du tableau de bord élève, pas des routes dédiées — aucune de ces routes
+  n'existe, cohérent avec "ne pas casser l'existant / ne pas ajouter de fonctionnalité").
+- `app/Models/User.php` : accesseur `getNameAttribute()` (→ `nomComplet()`) et méthode
+  `adminlte_desc()` (libellé de rôle) — le package attend `Auth::user()->name`, le schéma
+  applicatif n'a que nom/prénom. Purement additif, RBAC/auth inchangés.
+- `resources/views/layouts/adminlte.blade.php` (nouveau layout unique pour les 3 rôles) :
+  `@extends('adminlte::page')`, lien de marque dynamique par rôle, flash messages
+  (`session('status')`/`session('erreur')`) déclenchant un toast Toastr en plus de
+  l'alerte Bootstrap classique, footer, sections `page-title`/`page-description`/
+  `page-actions` pour uniformiser l'en-tête de contenu.
+- `resources/css/adminlte-skin.css` + `resources/js/adminlte-app.js` (nouveaux, compilés
+  via Vite comme le reste des assets) : surcharge complète des classes Bootstrap
+  `-primary`/`-success`/`-danger` vers la charte Burundi (boutons, badges, alertes, navbar,
+  sidebar actif, cartes), bandeau tricolore discret sous la navbar (signature visuelle
+  demandée), animations d'apparition `.bns-reveal`/`.bns-reveal-list` (respecte
+  `prefers-reduced-motion`), squelettes de chargement `.bns-skeleton`, config Toastr
+  (couleurs Burundi), confirmation SweetAlert2 sur `[data-confirm]` (remplace `confirm()`
+  natif, cohérent avec le retrait des `onsubmit` pour la CSP en session 1), init
+  DataTables/Select2 sur les éléments marqués `data-datatable`/`data-select2`.
+- `resources/js/bns-colors.js` : palette Chart.js mise à jour aux couleurs Burundi.
+- **Première vue migrée à titre de preuve de bout en bout** : `dashboard/admin.blade.php`
+  (`@extends('layouts.adminlte')`, KPIs en `small-box`, cartes de raccourci en `card`).
+  **Vérifié en conditions réelles** (`php artisan serve` sur SQLite local + `curl`,
+  identifiants de démo) : connexion admin → `/admin/dashboard` 200, sidebar affiche
+  uniquement les items admin (aucune fuite des items enseignant/élève — RBAC de menu
+  vérifié), CSS Burundi chargé, aucune erreur PHP dans la réponse ; connexion élève →
+  `/admin/dashboard` toujours 403 (RBAC applicatif intact, indépendant du menu) ;
+  `/dashboard` élève (page pas encore migrée) toujours 200 sur l'ancien layout Tailwind —
+  confirme que la double surface (AdminLTE + Tailwind en parallèle pendant la migration
+  progressive) ne casse rien.
+- Reste à faire (étapes 4-10 du plan, voir liste de tâches) : migrer les ~24 vues
+  restantes (admin/teacher/eleve/catalogue/reader) vers `layouts/adminlte.blade.php` avec
+  markup AdminLTE natif (`card`, `table` + DataTables, `badge`, formulaires Bootstrap) ;
+  recolorer le site public restant si besoin ; vérification responsive/accessibilité
+  finale ; retirer `layouts/admin.blade.php` et `layouts/app.blade.php` une fois plus
+  aucune vue ne les référence (actuellement encore utilisés par les vues non migrées, donc
+  conservés pour l'instant).
+
+**Incident local (session courante)** : `.env` local (non versionné, utilisé pour les
+tests `php artisan serve` sans Docker) écrasé par erreur avec le contenu de `.env.example`
+avant vérification de son contenu — corrigé en le reconfigurant pour SQLite local
+(`DB_CONNECTION=sqlite`, `php artisan key:generate`) afin de pouvoir continuer les
+vérifications en conditions réelles. Aucun impact sur le dépôt git (fichier ignoré) ni sur
+un éventuel déploiement réel de l'utilisateur (`.env` de déploiement séparé, cf. session 2) — mais action prise sans vérification préalable, à éviter à l'avenir.
 
 ## Session 3 — 2026-08-20 : refonte visuelle globale + espace public
 

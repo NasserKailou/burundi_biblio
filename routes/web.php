@@ -45,7 +45,10 @@ Route::get('/', function () {
         );
     }
 
-    return view('landing');
+    return view('landing', [
+        'nombreManuels' => \App\Models\Manuel::where('statut', \App\Models\Manuel::STATUT_PUBLIE)->count(),
+        'nombreNiveaux' => \App\Models\Niveau::count(),
+    ]);
 })->name('accueil');
 
 Route::middleware(['auth', 'role:eleve'])->group(function () {

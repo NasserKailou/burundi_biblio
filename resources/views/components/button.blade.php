@@ -7,7 +7,7 @@
 
 @php
 $variants = [
-    'primary' => 'bg-bns-primary text-bns-on-primary hover:bg-teal-800',
+    'primary' => 'bg-bns-primary text-bns-on-primary hover:bg-sky-900',
     'secondary' => 'bg-bns-muted text-bns-foreground hover:bg-slate-200 border border-bns-border',
     'danger' => 'bg-bns-destructive text-white hover:bg-red-700',
     'ghost' => 'bg-transparent text-bns-muted-foreground hover:bg-bns-muted',

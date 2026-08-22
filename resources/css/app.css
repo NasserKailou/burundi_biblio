@@ -13,19 +13,24 @@
 @tailwind utilities;
 
 :root {
-    --color-primary: #0f766e;
+    /* Charte Burundi (session 4) - voir docs/design-system.md pour les ratios de
+       contraste verifies. #1CA9E6 est trop clair pour du texte blanc (~2.7:1) : le
+       bleu "action" #0E7BAA est utilise partout ou du texte/icone porte du sens. */
+    --color-primary: #0e7baa;
+    --color-primary-bright: #1ca9e6;
+    --color-primary-deep: #073c56;
     --color-on-primary: #ffffff;
-    --color-accent: #d97706;
-    --color-on-accent: #78350f;
+    --color-accent: #1eb53a;
+    --color-on-accent: #ffffff;
     --color-background: #f8fafc;
-    --color-foreground: #0f172a;
+    --color-foreground: #2b2b2b;
     --color-card: #ffffff;
-    --color-muted: #f1f5f9;
+    --color-muted: #f4f7fa;
     --color-muted-foreground: #475569;
     --color-border: #e2e8f0;
-    --color-success: #059669;
-    --color-destructive: #dc2626;
-    --color-ring: #0f766e;
+    --color-success: #178a2d;
+    --color-destructive: #ce1126;
+    --color-ring: #0e7baa;
     --color-reader-bg: #faf9f6;
     --color-reader-toolbar: #1e293b;
 }
@@ -53,7 +58,7 @@
     height: 20rem;
     bottom: -6rem;
     left: -6rem;
-    background: radial-gradient(circle, rgba(217, 119, 6, 0.6) 0%, rgba(217, 119, 6, 0) 70%);
+    background: radial-gradient(circle, rgba(30, 181, 58, 0.55) 0%, rgba(30, 181, 58, 0) 70%);
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -9,7 +9,7 @@
 </head>
 <body class="min-h-screen bg-bns-background font-sans text-bns-foreground antialiased">
     <div class="grid min-h-screen lg:grid-cols-2">
-        <div class="relative hidden overflow-hidden bg-gradient-to-br from-teal-800 via-teal-700 to-teal-900 lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <div class="relative hidden overflow-hidden bg-gradient-to-br from-sky-800 via-sky-700 to-sky-900 lg:flex lg:flex-col lg:justify-between lg:p-12">
             <div class="bns-blob bns-blob-1" aria-hidden="true"></div>
             <div class="bns-blob bns-blob-2" aria-hidden="true"></div>
 
@@ -22,13 +22,13 @@
                 <h1 class="font-heading text-3xl font-semibold leading-tight text-white">
                     Tous les manuels de l'établissement, réunis au même endroit.
                 </h1>
-                <p class="mt-4 text-teal-100">
+                <p class="mt-4 text-sky-100">
                     Un accès simple et sécurisé aux ressources pédagogiques de votre niveau,
                     disponible sur le réseau de l'établissement.
                 </p>
             </div>
 
-            <p class="relative z-10 text-sm text-teal-200">© {{ date('Y') }} — Usage interne à l'établissement.</p>
+            <p class="relative z-10 text-sm text-sky-200">© {{ date('Y') }} — Usage interne à l'établissement.</p>
         </div>
 
         <div class="flex items-center justify-center px-4 py-12 sm:px-8">

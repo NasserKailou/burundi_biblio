@@ -6,7 +6,9 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/adminlte-skin.css',
                 'resources/js/app.js',
+                'resources/js/adminlte-app.js',
                 'resources/js/catalogue.js',
                 'resources/js/reader.js',
                 'resources/js/fiche-manuel.js',

@@ -3,9 +3,9 @@
 @php
 $styles = [
     'muted' => 'bg-bns-muted text-bns-muted-foreground',
-    'primary' => 'bg-teal-50 text-bns-primary',
-    'accent' => 'bg-amber-50 text-bns-on-accent',
-    'success' => 'bg-emerald-50 text-emerald-700',
+    'primary' => 'bg-sky-50 text-bns-primary',
+    'accent' => 'bg-green-50 text-bns-accent',
+    'success' => 'bg-green-50 text-green-800',
     'destructive' => 'bg-red-50 text-bns-destructive',
 ];
 @endphp

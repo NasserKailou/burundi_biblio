@@ -27,31 +27,31 @@
     </header>
 
     <main>
-        <section class="relative overflow-hidden bg-gradient-to-br from-teal-800 via-teal-700 to-teal-900">
+        <section class="relative overflow-hidden bg-gradient-to-br from-sky-800 via-sky-700 to-sky-900">
             <div class="bns-blob bns-blob-1" aria-hidden="true"></div>
             <div class="bns-blob bns-blob-2" aria-hidden="true"></div>
 
             <div class="relative z-10 mx-auto grid max-w-6xl gap-12 px-4 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
                 <div class="bns-fade-in-up">
-                    <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-teal-100 ring-1 ring-white/20">
+                    <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-sky-100 ring-1 ring-white/20">
                         <x-icon name="sparkles" class="h-3.5 w-3.5" /> Plateforme interne de l'etablissement
                     </span>
                     <h1 class="mt-5 font-heading text-4xl font-semibold leading-tight text-white sm:text-5xl">
                         Tous les manuels de l'etablissement, reunis au meme endroit.
                     </h1>
-                    <p class="mt-5 max-w-lg text-base text-teal-100">
+                    <p class="mt-5 max-w-lg text-base text-sky-100">
                         Un espace numerique simple et securise pour consulter, organiser et suivre les ressources
                         pedagogiques — accessible aux eleves, enseignants et a l'administration.
                     </p>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
-                        <x-button variant="primary" size="lg" href="{{ route('login') }}" class="!bg-white !text-bns-primary hover:!bg-teal-50">
-                            <x-icon name="arrow-right" class="h-4 w-4" /> Se connecter
+                        <x-button variant="primary" size="lg" href="{{ route('login') }}" class="!bg-white !text-bns-primary hover:!bg-sky-50">
+                            <x-icon name="arrow-right" class="h-4 w-4" /> Se connecter à la bibliothèque
                         </x-button>
                         <x-button variant="ghost" size="lg" href="{{ route('register') }}" class="!text-white ring-1 ring-white/30 hover:!bg-white/10">
                             Creer un compte eleve
                         </x-button>
                     </div>
-                    <p class="mt-6 text-xs text-teal-200">
+                    <p class="mt-6 text-xs text-sky-200">
                         Reserve aux membres de l'etablissement. Les comptes sont crees ou valides par l'administration.
                     </p>
                 </div>
@@ -62,7 +62,7 @@
                         <div class="absolute inset-x-3 bottom-0 top-5 -rotate-2 rounded-2xl bg-white/15 ring-1 ring-white/20"></div>
                         <div class="absolute inset-0 flex flex-col justify-between rounded-2xl bg-white p-6 shadow-2xl">
                             <div class="flex items-center justify-between">
-                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600/10 text-bns-primary">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-600/10 text-bns-primary">
                                     <x-icon name="book-open" class="h-5 w-5" />
                                 </span>
                                 <x-badge color="success">Publie</x-badge>
@@ -101,13 +101,26 @@
 
                 @foreach ($fonctionnalites as $f)
                     <div class="rounded-xl border border-bns-border bg-bns-card p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-teal-600/10 text-bns-primary">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-sky-600/10 text-bns-primary">
                             <x-icon :name="$f['icon']" class="h-5 w-5" />
                         </span>
                         <h3 class="mt-4 font-heading text-base font-semibold text-bns-foreground">{{ $f['titre'] }}</h3>
                         <p class="mt-2 text-sm text-bns-muted-foreground">{{ $f['texte'] }}</p>
                     </div>
                 @endforeach
+            </div>
+        </section>
+
+        <section class="border-y border-bns-border bg-bns-primary-deep">
+            <div class="mx-auto grid max-w-6xl gap-8 px-4 py-14 text-center sm:grid-cols-2">
+                <div>
+                    <p class="font-heading text-4xl font-semibold text-white">{{ $nombreManuels }}</p>
+                    <p class="mt-1 text-sm text-sky-100">Manuels publiés dans le catalogue</p>
+                </div>
+                <div>
+                    <p class="font-heading text-4xl font-semibold text-white">{{ $nombreNiveaux }}</p>
+                    <p class="mt-1 text-sm text-sky-100">Niveaux couverts par l'établissement</p>
+                </div>
             </div>
         </section>
 
@@ -141,13 +154,13 @@
         </section>
 
         <section class="mx-auto max-w-6xl px-4 py-20">
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-800 via-teal-700 to-teal-900 px-8 py-14 text-center shadow-lg">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-800 via-sky-700 to-sky-900 px-8 py-14 text-center shadow-lg">
                 <div class="bns-blob bns-blob-1" aria-hidden="true"></div>
                 <div class="relative z-10">
                     <h2 class="font-heading text-2xl font-semibold text-white sm:text-3xl">Pret a acceder a votre bibliotheque ?</h2>
-                    <p class="mx-auto mt-3 max-w-lg text-teal-100">Connectez-vous avec votre identifiant d'etablissement ou creez un compte eleve en quelques instants.</p>
+                    <p class="mx-auto mt-3 max-w-lg text-sky-100">Connectez-vous avec votre identifiant d'etablissement ou creez un compte eleve en quelques instants.</p>
                     <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-                        <x-button variant="primary" size="lg" href="{{ route('login') }}" class="!bg-white !text-bns-primary hover:!bg-teal-50">
+                        <x-button variant="primary" size="lg" href="{{ route('login') }}" class="!bg-white !text-bns-primary hover:!bg-sky-50">
                             Se connecter
                         </x-button>
                         <x-button variant="ghost" size="lg" href="{{ route('register') }}" class="!text-white ring-1 ring-white/30 hover:!bg-white/10">
@@ -157,9 +170,21 @@
                 </div>
             </div>
         </section>
+        <section id="a-propos" class="mx-auto max-w-4xl px-4 py-20">
+            <div class="text-center">
+                <h2 class="font-heading text-3xl font-semibold text-bns-foreground">À propos</h2>
+                <p class="mx-auto mt-4 max-w-2xl text-bns-muted-foreground">
+                    La Bibliothèque Numérique Scolaire est une plateforme interne à l'établissement,
+                    déployée sur le réseau local et accessible uniquement aux élèves, enseignants et à
+                    l'administration. Elle rassemble les manuels scolaires de chaque niveau dans un
+                    espace unique, consultable en ligne sans dépendre d'une connexion Internet externe.
+                </p>
+            </div>
+        </section>
     </main>
 
     <footer class="border-t border-bns-border">
+        <div class="h-1.5 bg-gradient-to-r from-bns-accent via-white to-bns-destructive" aria-hidden="true"></div>
         <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-8 text-sm text-bns-muted-foreground sm:flex-row">
             <div class="flex items-center gap-2">
                 <span class="flex h-7 w-7 items-center justify-center rounded-md bg-bns-primary font-heading text-[10px] font-bold text-white">BNS</span>
